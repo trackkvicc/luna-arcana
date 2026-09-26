@@ -9,9 +9,10 @@ Web estática (HTML + CSS + JS, sin instalar nada). Para verla en el Mac:
 - **Tarot gratis**: 15 tiradas (carta del día, sí o no, 3 cartas, cruz simple, mapa de tu vida, cruz celta, amor, trabajo, dinero, del día). Se baraja, se eligen las cartas boca abajo y sale la lectura. Cartas invertidas opcionales.
 - **Significados**: las 78 cartas con derecho, invertida, amor, trabajo, consejo y sí/no.
 - **Aprende**: 6 guías de divulgación.
-- **Tienda**: 9 productos, carrito, envío gratis desde 35 €, formulario de pedido.
+- **Tienda (dropshipping)**: 9 barajas de AliExpress elegidas por ventas y valoración (proveedores y costes en `proveedores.md`, que NO se sube). Fotos recortadas y puestas sobre un fondo de estudio común (originales en `img/tienda/original/`, tampoco se suben). Cabecera, garantías, orden por precio, guía «¿Qué baraja elijo?» (#/tienda-guia), ficha con desplegables y «También te puede gustar». Envío gratis desde 30 €, entrega 7–12 días.
+- **Enganche** (js/extras.js + css/extras.css): carta del día con racha, horóscopo semanal del tarot, arcano personal, compatibilidad, test «¿Qué carta eres?», diario de tiradas y botones de compartir (#/descubre).
 - **Lectura personalizada** por correo (formulario).
-- **Baraja propia**: las 78 cartas del Rider-Waite-Smith de 1909 (Pamela Colman Smith, dominio público, bajadas de Wikimedia a `img/rws-1909/`) repintadas al estilo de The Light Seer's Tarot con `img/estilizar.py`: plumilla + acuarela luminosa + rayos + arcoíris. No usa ninguna ilustración de Chris-Anne (tiene derechos). Salida en `img/cartas/` (480 px) y `img/cartas/min/` (miniaturas). Para rehacerlas: `cd img && python3 estilizar.py`.
+- **Baraja propia**: las 78 cartas del Rider-Waite-Smith de 1909 (Pamela Colman Smith, dominio público, bajadas de Wikimedia a `img/rws-1909/`) repintadas al estilo de The Light Seer's Tarot con `img/estilizar.py`: plumilla + acuarela luminosa + rayos + arcoíris. No usa ninguna ilustración de Chris-Anne (tiene derechos). Salida en `img/cartas/` (720 px) y `img/cartas/min/` (miniaturas). Se recorta en todas la franja de arriba con el número romano (el título manuscrito ya lo lleva). Para rehacerlas: `cd img && python3 estilizar.py`.
 
 Estructura inspirada en tarotdetiziana.com (catálogo de tiradas por temas, significados, guías, lectura por email); textos propios.
 

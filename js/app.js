@@ -70,6 +70,8 @@ function vistaInicio() {
     <div class="centro" style="margin-top:30px"><a class="btn btn-oro" href="#/tarot-gratis">Ver las ${TIRADAS.length} tiradas</a></div>
   </div></section>
 
+  <div id="extra-inicio"></div>
+
   <section class="bloque"><div class="contenedor">
     ${bloqueSuscripcion()}
   </div></section>
@@ -80,7 +82,7 @@ function vistaInicio() {
   </div></section>
 
   <section class="bloque"><div class="contenedor">
-    <div class="centro"><span class="ante">Tienda</span><h2>Tu baraja te está esperando</h2><p class="suave">Barajas, tapetes y accesorios. Envío gratis desde ${ENVIO.gratisDesde} €.</p></div>
+    <div class="centro"><span class="ante">Tienda</span><h2>Tu baraja te está esperando</h2><p class="suave">Barajas clásicas, doradas y holográficas. Envío gratis desde ${ENVIO.gratisDesde} €.</p></div>
     <div class="rejilla r4 productos" style="margin-top:30px">${PRODUCTOS.slice(0, 4).map(tarjetaProducto).join("")}</div>
     <div class="centro" style="margin-top:30px"><a class="btn btn-vino" href="#/tienda">Ver toda la tienda</a></div>
   </div></section>
@@ -344,28 +346,44 @@ function vistaGuia(id) {
 }
 
 // ---------- Tienda ----------
-function fotoProducto(p, grande = false) {
-  const cartas = p.cartas.map(cartaPorId);
-  const n = cartas.length;
-  const giros = n === 1 ? [0] : n === 2 ? [-10, 10] : [-16, 0, 16];
-  const dibujo = n
-    ? cartas.map((c, i) => cartaHTML(c).replace('class="carta', `style="transform:rotate(${giros[i]}deg) translateX(${(i - (n - 1) / 2) * (grande ? 40 : 22)}px)" class="carta`)).join("")
-    : `<span style="font-size:${grande ? "7rem" : "4rem"};color:var(--oro)">${p.cat === "Accesorios" ? "☾" : "✦"}</span>`;
-  return `<div class="foto" style="background:${p.fondo}">${p.etiqueta ? `<span class="etiqueta-prod">${p.etiqueta}</span>` : ""}${dibujo}</div>`;
+function fotoProducto(p) {
+  return `<div class="foto foto-real">${p.etiqueta ? `<span class="etiqueta-prod">${p.etiqueta}</span>` : ""}<img src="img/tienda/${p.foto}.jpg" alt="${p.nombre}" loading="lazy"></div>`;
 }
+const precioHTML = p => `<span class="precio">${euros(p.precio)}</span>${p.antes ? ` <s class="suave" style="font-size:.9rem">${euros(p.antes)}</s>` : ""}`;
 function tarjetaProducto(p) {
   return `<div><a class="producto" href="#/tienda/${p.id}">${fotoProducto(p)}
     <span class="suave" style="font-size:.8rem">${p.cat}</span><h3 style="font-size:1.25rem;margin:2px 0 4px">${p.nombre}</h3></a>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="precio">${euros(p.precio)}</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>${precioHTML(p)}</span>
     <button class="btn btn-vino" style="padding:9px 16px;font-size:.85rem" onclick="anadir('${p.id}',1)">Añadir</button></div></div>`;
 }
+const GARANTIAS = [
+  ["🔒", "Compra segura", "Conexión cifrada"],
+  ["🚚", "Envío con seguimiento", () => `Gratis desde ${ENVIO.gratisDesde} €`],
+  ["↩️", "14 días para devolver", "Sin preguntas"],
+  ["💬", "Te ayudamos a elegir", "Respuesta en menos de 24 h"],
+];
+function bandaGarantias() {
+  return `<div class="garantias">${GARANTIAS.map(([i, t, d]) => `<div><span class="g-icono">${i}</span><div><strong>${t}</strong><small>${typeof d === "function" ? d() : d}</small></div></div>`).join("")}</div>`;
+}
+
 function vistaTienda() {
   const cats = ["Todas", ...new Set(PRODUCTOS.map(p => p.cat))];
-  return `<section class="bloque"><div class="contenedor">
-    <div class="centro estrecho" style="margin:0 auto"><span class="ante">Tienda</span><h1>Barajas y accesorios de tarot</h1>
-    <p class="suave">Envío en 24–72 h · Gratis desde ${ENVIO.gratisDesde} € · 14 días para devolver</p></div>
-    <div class="filtros">${cats.map((c, i) => `<button class="chip ${i === 0 ? "activo" : ""}" data-cat="${c}">${c}</button>`).join("")}</div>
-    <div class="rejilla r4 productos" id="lista-productos">${PRODUCTOS.map(p => `<div data-cat="${p.cat}">${tarjetaProducto(p)}</div>`).join("")}</div>
+  return `<section class="tienda-hero"><div class="contenedor">
+      <div><span class="ante">La tienda de Luna Arcana</span>
+      <h1>Barajas elegidas <em>una a una</em></h1>
+      <p>Seleccionamos cada baraja por su cartulina, sus colores y su caja. Solo están las que usaríamos nosotros.</p>
+      <a class="btn btn-vino" href="#lista-productos" onclick="document.getElementById('lista-productos').scrollIntoView({behavior:'smooth'});return false">Ver barajas</a>
+      <a class="btn btn-linea" href="#/tienda-guia">¿Cuál elijo?</a></div>
+      <div class="tienda-hero-foto"><img src="img/tienda/${PRODUCTOS[0].foto}.jpg" alt=""><img src="img/tienda/${PRODUCTOS[1].foto}.jpg" alt=""></div>
+    </div></section>
+    <section class="bloque" style="padding-top:34px"><div class="contenedor">
+    ${bandaGarantias()}
+    <div class="barra-tienda">
+      <div class="filtros" style="margin:0">${cats.map((c, i) => `<button class="chip ${i === 0 ? "activo" : ""}" data-cat="${c}">${c}</button>`).join("")}</div>
+      <select id="orden" aria-label="Ordenar"><option value="dest">Destacados</option><option value="asc">Precio: de menor a mayor</option><option value="desc">Precio: de mayor a menor</option></select>
+    </div>
+    <div class="rejilla r4 productos" id="lista-productos">${PRODUCTOS.map((p, i) => `<div data-cat="${p.cat}" data-precio="${p.precio}" data-i="${i}">${tarjetaProducto(p)}</div>`).join("")}</div>
+    <div class="nota-envio">Todas nuestras barajas tienen el tamaño estándar (unos 12 × 7 cm), 78 cartas y sirven para cualquier tirada de la web.</div>
   </div></section>`;
 }
 function montarFiltrosTienda() {
@@ -373,28 +391,59 @@ function montarFiltrosTienda() {
     document.querySelectorAll(".chip").forEach(x => x.classList.toggle("activo", x === ch));
     document.querySelectorAll("#lista-productos > div").forEach(d => d.style.display = ch.dataset.cat === "Todas" || d.dataset.cat === ch.dataset.cat ? "" : "none");
   });
+  const orden = document.getElementById("orden");
+  if (orden) orden.onchange = () => {
+    const lista = document.getElementById("lista-productos");
+    const hijos = [...lista.children];
+    const v = orden.value;
+    hijos.sort((x, y) => v === "dest" ? x.dataset.i - y.dataset.i : (v === "asc" ? 1 : -1) * (x.dataset.precio - y.dataset.precio));
+    hijos.forEach(h => lista.appendChild(h));
+  };
 }
+
+function vistaGuiaTienda() {
+  const f = id => PRODUCTOS.find(p => p.id === id);
+  const perfiles = [
+    ["Si empiezas", "Elige una baraja con las escenas clásicas: son las que explican todos los libros y las guías de esta web.", ["tarot-con-significados", "tarot-luna-dorada", "tarot-rosa"]],
+    ["Si buscas un regalo", "Las barajas doradas y la caja de metal impresionan al abrirlas y duran años.", ["tarot-ojo-dorado", "tarot-vintage-lata", "tarot-dorado-clasico"]],
+    ["Si ya sabes leer", "Diseños con personalidad para que tus tiradas tengan otro aire.", ["tarot-vidriera", "tarot-de-los-gatos", "tarot-holografico"]],
+  ];
+  return `<section class="bloque"><div class="contenedor">
+    <div class="miga"><a href="#/tienda">Tienda</a> › ¿Qué baraja elijo?</div>
+    <div class="centro estrecho" style="margin:0 auto 30px"><span class="ante">Guía de compra</span><h1>¿Qué baraja elijo?</h1>
+    <p class="suave">No hay baraja «correcta»: la mejor es la que te apetece mirar. Aun así, estas pistas ayudan.</p></div>
+    ${perfiles.map(([t, d, ids]) => `<div class="perfil-compra"><div><h2>${t}</h2><p class="suave">${d}</p></div>
+      <div class="rejilla r3 productos">${ids.map(f).filter(Boolean).map(tarjetaProducto).join("")}</div></div>`).join("")}
+  </div></section>`;
+}
+
 let cantFicha = 1;
 function vistaProducto(id) {
   const p = PRODUCTOS.find(x => x.id === id);
   if (!p) return vistaNoEncontrada();
   cantFicha = 1;
+  const otros = PRODUCTOS.filter(x => x.id !== p.id && x.cat === p.cat).concat(PRODUCTOS.filter(x => x.id !== p.id && x.cat !== p.cat)).slice(0, 4);
   return `<section class="bloque"><div class="contenedor">
-    <div class="miga"><a href="#/tienda">Tienda</a> › ${p.nombre}</div>
+    <div class="miga"><a href="#/tienda">Tienda</a> › <a href="#/tienda">${p.cat}</a> › ${p.nombre}</div>
     <div class="ficha-prod">
-      <div class="producto">${fotoProducto(p, true)}</div>
+      <div class="producto">${fotoProducto(p)}</div>
       <div>
-        <span class="ante">${p.cat}</span><h1 style="font-size:2.6rem">${p.nombre}</h1>
-        <div class="precio" style="font-size:2rem;margin-bottom:14px">${euros(p.precio)} <span class="suave" style="font-size:.9rem;font-family:var(--sans);font-weight:400">IVA incluido</span></div>
+        <span class="ante">${p.cat}</span><h1 style="font-size:2.6rem;margin-bottom:.2em">${p.nombre}</h1>
+        <div class="precio" style="font-size:2rem;margin-bottom:6px">${euros(p.precio)} <span class="suave" style="font-size:.9rem;font-family:var(--sans);font-weight:400">IVA incluido</span></div>
+        <p class="stock">● Disponible · sale en 1–3 días</p>
         <p>${p.desc}</p>
-        <ul>${p.detalles.map(d => `<li>${d}</li>`).join("")}</ul>
-        <div style="display:flex;gap:12px;align-items:center;margin:24px 0;flex-wrap:wrap">
-          <div class="cantidad"><button onclick="cambiarCantFicha(-1)">−</button><span id="cant-ficha">1</span><button onclick="cambiarCantFicha(1)">+</button></div>
-          <button class="btn btn-vino" onclick="anadir('${p.id}', cantFicha)">Añadir al carrito</button>
+        <div style="display:flex;gap:12px;align-items:center;margin:22px 0;flex-wrap:wrap">
+          <div class="cantidad"><button onclick="cambiarCantFicha(-1)" aria-label="Quitar uno">−</button><span id="cant-ficha">1</span><button onclick="cambiarCantFicha(1)" aria-label="Añadir uno">+</button></div>
+          <button class="btn btn-vino" style="flex:1;min-width:200px" onclick="anadir('${p.id}', cantFicha)">Añadir al carrito · ${euros(p.precio)}</button>
         </div>
-        <p class="suave" style="font-size:.9rem">🚚 Envío en 24–72 h · gratis desde ${ENVIO.gratisDesde} €<br>↩️ 14 días para devolverlo</p>
+        <div class="mini-garantias"><span>🚚 Envío gratis desde ${ENVIO.gratisDesde} €</span><span>↩️ 14 días para devolver</span><span>🔒 Pago seguro</span></div>
+        <details open><summary>Qué incluye</summary><ul>${p.detalles.map(d => `<li>${d}</li>`).join("")}</ul></details>
+        <details><summary>Envío y entrega</summary><p>Sale en 1–3 días laborables y llega en ${ENVIO.plazo} a la península, con número de seguimiento que te enviamos por correo. Envío gratis a partir de ${ENVIO.gratisDesde} €; si no, ${euros(ENVIO.coste)}.</p></details>
+        <details><summary>Devoluciones</summary><p>Tienes 14 días desde que la recibes para devolverla sin dar explicaciones, siempre que esté sin usar y en su caja. Si llega dañada, te enviamos otra sin coste. <a href="#/legal/envios">Más información</a>.</p></details>
+        <details><summary>¿Es para principiantes?</summary><p>Todas nuestras barajas siguen el tarot clásico de 78 cartas, así que funcionan con las <a href="#/tarot-gratis">tiradas</a> y los <a href="#/significados">significados</a> de esta web. Si empiezas, mira nuestra <a href="#/tienda-guia">guía para elegir</a>.</p></details>
       </div>
     </div>
+    <div style="margin-top:60px"><h2>También te puede gustar</h2><div class="rejilla r4 productos" style="margin-top:20px">${otros.map(tarjetaProducto).join("")}</div></div>
   </div></section>`;
 }
 function cambiarCantFicha(d) { cantFicha = Math.max(1, cantFicha + d); document.getElementById("cant-ficha").textContent = cantFicha; }
@@ -426,7 +475,7 @@ function vistaCarrito() {
     <h1>Tu carrito</h1>
     <div class="ficha-prod" style="grid-template-columns:1.5fr 1fr">
       <div>${lineas.map(({ p, n }) => `<div class="linea-carrito">
-          <div class="miniatura" style="background:${p.fondo}"></div>
+          <img class="miniatura" src="img/tienda/${p.foto}.jpg" alt="" style="object-fit:cover">
           <div><strong>${p.nombre}</strong><br><span class="suave">${euros(p.precio)}</span></div>
           <div class="cantidad"><button onclick="cambiarCant('${p.id}',-1)">−</button><span>${n}</span><button onclick="cambiarCant('${p.id}',1)">+</button></div>
           <div style="text-align:right"><strong>${euros(p.precio * n)}</strong><br><button class="quitar" onclick="cambiarCant('${p.id}',-${n})">Quitar</button></div>
@@ -548,16 +597,19 @@ function router() {
     case "significados": html = sub ? vistaCarta(sub) : vistaSignificados(); break;
     case "aprende": html = sub ? vistaGuia(sub) : vistaAprende(); break;
     case "tienda": if (sub) html = vistaProducto(sub); else { html = vistaTienda(); despues = montarFiltrosTienda; } break;
+    case "tienda-guia": html = vistaGuiaTienda(); break;
     case "carrito": html = vistaCarrito(); break;
     case "pedido": html = vistaPedido(); break;
     case "lectura-personalizada": html = vistaLecturaPersonal(); break;
     case "contacto": html = vistaContacto(); break;
     case "legal": html = vistaLegal(sub); break;
-    default: html = vistaNoEncontrada();
+    // Secciones añadidas desde js/extras.js: window.RUTAS_EXTRA = { "seccion": sub => html, ... }
+    default: html = (window.RUTAS_EXTRA && RUTAS_EXTRA[sec]) ? RUTAS_EXTRA[sec](sub) : vistaNoEncontrada();
   }
   $app.innerHTML = html;
   if (despues) despues();
-  document.querySelectorAll("nav.menu a").forEach(a => a.classList.toggle("activo", a.dataset.sec === sec));
+  if (window.alPintar) window.alPintar(sec, sub);  // gancho para js/extras.js
+  document.querySelectorAll("nav.menu a").forEach(a => a.classList.toggle("activo", a.dataset.sec === sec || (sec === "tienda-guia" && a.dataset.sec === "tienda")));
   document.querySelector("nav.menu").classList.remove("abierto");
   window.scrollTo(0, 0);
 }
