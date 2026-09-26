@@ -2,14 +2,16 @@
 de Luna Arcana: trazo de tinta rayado sobre acuarela luminosa, halos de luz y destellos.
 
 Uso: python3 estilizar.py [id-carta ...]   (sin argumentos, las 78)
-Entrada: rws-1909/<id>.jpg   Salida: cartas/<id>.jpg
+Entrada: rws-1909-hd/<id>.jpg (o rws-1909/ si falta)   Salida: cartas/<id>.jpg y cartas/min/<id>.jpg
 """
 import sys, os, math, random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
-ANCHO, ALTO = 480, 820  # proporción 7:12 aprox.
+ANCHO, ALTO = 720, 1230  # proporción 7:12 aprox.
+K = ANCHO / 480  # escala de trazos y desenfoques respecto a la versión de 480 px
+impar = lambda n: 2 * round(n * K / 2) + 1
 
 MAYORES = ["el-loco", "el-mago", "la-sacerdotisa", "la-emperatriz", "el-emperador", "el-hierofante", "los-enamorados",
            "el-carro", "la-fuerza", "el-ermitano", "la-rueda-de-la-fortuna", "la-justicia", "el-colgado", "la-muerte",
@@ -39,8 +41,8 @@ def paleta(cid):
     return PALETA_PALOS[cid.split("-de-")[1]]
 
 
-def recortar(img, cid):
-    """Quita el marco blanco y, si la carta lo tiene, la banda del título en inglés."""
+def caja_recorte(img, cid):
+    """Caja sin el marco blanco ni, si la carta la tiene, la banda del título en inglés."""
     a = np.asarray(img.convert("L"), dtype=np.float32)
     h, w = a.shape
     # La línea negra del marco: primera fila/columna muy oscura desde cada borde
@@ -56,11 +58,11 @@ def recortar(img, cid):
     arr = int(np.median([primera_oscura(a[:h // 4, x]) for x in cols]))
     aba = h - int(np.median([primera_oscura(a[::-1, x][:h // 4]) for x in cols]))
     m = 9  # margen para no dejar la línea del marco
-    caja = [izq + m, arr + m, der - m, aba - m]
+    caja = [izq + m, arr + m + 5, der - m, aba - m]
     con_titulo = cid in MAYORES or cid.split("-de-")[0] in FIGURAS
     if con_titulo:
         caja[3] = arr + int((aba - arr) * 0.885)  # por encima de la banda del nombre
-    return img.crop(caja)
+    return caja
 
 
 def degradado(pal, w, h):
@@ -89,7 +91,9 @@ def manchas(w, h, rnd, n=6):
     return np.asarray(capa.filter(ImageFilter.GaussianBlur(w / 9)), dtype=np.float32) / 255
 
 
+
 def rayado(w, h, rnd, angulo, paso=5):
+    paso = max(3, round(paso * K))
     """Textura de líneas paralelas finas (sombreado a plumilla)."""
     capa = Image.new("L", (w * 2, h * 2), 0)
     d = ImageDraw.Draw(capa)
@@ -111,7 +115,7 @@ def garabatos_borde(w, h, rnd):
         pts = [(x, y)]
         for k in range(1, 5):
             pts.append((x + math.cos(ang) * largo * k / 4 + rnd.uniform(-3, 3), y + math.sin(ang) * largo * k / 4 + rnd.uniform(-3, 3)))
-        d.line(pts, fill=int(rnd.uniform(120, 230)), width=1)
+        d.line(pts, fill=int(rnd.uniform(120, 230)), width=max(1, round(K)))
     return np.asarray(capa.filter(ImageFilter.GaussianBlur(.4)), dtype=np.float32) / 255
 
 
@@ -119,18 +123,35 @@ def destellos(img, rnd, n=45):
     d = ImageDraw.Draw(img, "RGBA")
     w, h = img.size
     for _ in range(n):
-        x, y, r = rnd.uniform(0, w), rnd.uniform(0, h * .75), rnd.uniform(.6, 2.2)
+        x, y, r = rnd.uniform(0, w), rnd.uniform(0, h * .75), rnd.uniform(.6, 2.2) * K
         d.ellipse([x - r, y - r, x + r, y + r], fill=(255, 255, 255, rnd.randint(150, 255)))
     for _ in range(5):  # estrellas de cuatro puntas
-        x, y, t = rnd.uniform(w * .05, w * .95), rnd.uniform(h * .03, h * .6), rnd.uniform(6, 13)
+        x, y, t = rnd.uniform(w * .05, w * .95), rnd.uniform(h * .03, h * .6), rnd.uniform(6, 13) * K
         d.polygon([(x, y - t), (x + t * .22, y - t * .22), (x + t, y), (x + t * .22, y + t * .22),
                    (x, y + t), (x - t * .22, y + t * .22), (x - t, y), (x - t * .22, y - t * .22)], fill=(255, 255, 255, 235))
     return img
 
 
+def recortar_hd(img, cid):
+    """Recorta la imagen grande con la caja calculada sobre una copia de 500 px."""
+    f = img.width / 500
+    peque = img.resize((500, round(img.height / f)), Image.LANCZOS)
+    x0, y0, x1, y1 = caja_recorte(peque, cid)
+    # Franja superior con el número romano: se quita en TODAS las cartas (baraja uniforme),
+    # y lo mismo en proporción por los lados para mantener la forma de la carta.
+    alto = y1 - y0
+    quita = alto * .068
+    lado = quita * (x1 - x0) / alto / 2
+    caja = (x0 + lado, y0 + quita, x1 - lado, y1)
+    return img.crop(tuple(round(v * f) for v in caja))
+
+
 def estilizar(cid):
     rnd = random.Random(cid)
-    img = recortar(Image.open(os.path.join(AQUI, "rws-1909", cid + ".jpg")).convert("RGB"), cid)
+    hd = os.path.join(AQUI, "rws-1909-hd", cid + ".jpg")
+    fuente = hd if os.path.exists(hd) else os.path.join(AQUI, "rws-1909", cid + ".jpg")
+    img = Image.open(fuente).convert("RGB")
+    img = recortar_hd(Image.open(fuente).convert("RGB"), cid)
     img = img.resize((ANCHO, ALTO), Image.LANCZOS)
     o = np.asarray(img, dtype=np.float32) / 255
     lum = o @ np.array([.299, .587, .114], dtype=np.float32)
@@ -138,9 +159,9 @@ def estilizar(cid):
     # 1. Tinta: las líneas negras del original. Las manchas negras macizas se convierten en rayado.
     negro_orig = np.clip((.30 - lum) / .18, 0, 1)
     ni = Image.fromarray((negro_orig * 255).astype(np.uint8))
-    macizo = np.asarray(ni.filter(ImageFilter.MinFilter(7)).filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(1.5)), dtype=np.float32) / 255
+    macizo = np.asarray(ni.filter(ImageFilter.MinFilter(impar(7))).filter(ImageFilter.MaxFilter(impar(7))).filter(ImageFilter.GaussianBlur(1.5 * K)), dtype=np.float32) / 255
     lineas = np.clip(negro_orig - macizo, 0, 1)
-    ti = Image.fromarray((lineas * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(.45))
+    ti = Image.fromarray((lineas * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(.45 * K))
     tinta = np.asarray(ti, dtype=np.float32) / 255
     # contorno de las manchas macizas (para que no pierdan la forma)
     borde_macizo = np.asarray(Image.fromarray((macizo * 255).astype(np.uint8)).filter(ImageFilter.FIND_EDGES), dtype=np.float32) / 255
@@ -148,7 +169,7 @@ def estilizar(cid):
 
     # 2. Color base: los colores planos de 1909, más vivos, fundidos con el degradado luminoso
     gris = lum[..., None]
-    viva = np.clip(gris + (o - gris) * 1.85, 0, 1)
+    viva = np.clip(gris + (o - gris) * 2.1, 0, 1)
     fondo = degradado(paleta(cid), ANCHO, ALTO)
     # luz suave: la ilustración toma el tono del degradado sin perder sus formas
     base = np.where(viva < .5, 2 * viva * fondo, 1 - 2 * (1 - viva) * (1 - fondo))
@@ -158,7 +179,7 @@ def estilizar(cid):
     profundo = fondo * .55 + hexrgb("#2a1d45") * .45
     color = color * (1 - macizo[..., None]) + profundo * macizo[..., None]
     # sangrado de acuarela
-    col = Image.fromarray((np.clip(color, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6))
+    col = Image.fromarray((np.clip(color, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6 * K))
     color = np.asarray(col, dtype=np.float32) / 255
 
     # 3. Luz: manchas de nebulosa y haz de luz (trama)
@@ -187,7 +208,7 @@ def estilizar(cid):
     plumilla = np.maximum(plumilla, garabatos_borde(ANCHO, ALTO, rnd) * .55)
 
     # 5. Textura de papel
-    ruido = np.asarray(Image.effect_noise((ANCHO, ALTO), 40).filter(ImageFilter.GaussianBlur(.8)), dtype=np.float32) / 255
+    ruido = np.asarray(Image.effect_noise((ANCHO, ALTO), 40).filter(ImageFilter.GaussianBlur(.8 * K)), dtype=np.float32) / 255
     color = color * (.94 + ruido[..., None] * .1)
 
     # 6. Tinta encima
@@ -195,12 +216,23 @@ def estilizar(cid):
     capa_tinta = np.clip(tinta * .95 + plumilla * .7, 0, 1)[..., None]
     final = color * (1 - capa_tinta) + negro * capa_tinta
 
+    # 7. Brillo: las zonas de luz irradian un poco (bloom) y el conjunto gana contraste
+    lf = final @ np.array([.299, .587, .114], dtype=np.float32)
+    brillo = Image.fromarray((np.clip((lf - .8) / .2, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(14 * K))
+    brillo = np.asarray(brillo, dtype=np.float32)[..., None] / 255
+    final = 1 - (1 - final) * (1 - brillo * .3)
+    gf = (final @ np.array([.299, .587, .114], dtype=np.float32))[..., None]
+    final = np.clip(gf + (final - gf) * 1.22, 0, 1)  # más saturación
+    final = np.clip((final - .5) * 1.1 + .49, 0, 1)  # más contraste
+
     out = Image.fromarray((np.clip(final, 0, 1) * 255).astype(np.uint8))
     out = destellos(out, rnd)
-    out.save(os.path.join(AQUI, "cartas", cid + ".jpg"), quality=84, optimize=True, progressive=True)
+    out.save(os.path.join(AQUI, "cartas", cid + ".jpg"), quality=82, optimize=True, progressive=True)
+    out.resize((240, 410), Image.LANCZOS).save(os.path.join(AQUI, "cartas", "min", cid + ".jpg"), quality=80, optimize=True, progressive=True)
 
 
 if __name__ == "__main__":
+    os.makedirs(os.path.join(AQUI, "cartas", "min"), exist_ok=True)
     ids = sys.argv[1:] or sorted(f[:-4] for f in os.listdir(os.path.join(AQUI, "rws-1909")) if f.endswith(".jpg"))
     for cid in ids:
         estilizar(cid)
