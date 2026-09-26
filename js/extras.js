@@ -1,6 +1,7 @@
 // Funciones de la web que enganchan: se cargan antes que app.js.
 // Todo va dentro de una función para no chocar con los nombres de app.js.
 // Solo se exponen window.RUTAS_EXTRA, window.alPintar y window.LA (para los botones).
+// También: la luna de hoy (#/luna) y el modo práctica para aprender las cartas (#/practica).
 // Datos del usuario: solo en su navegador (localStorage), nunca salen de ahí.
 window.RUTAS_EXTRA = {};
 
@@ -501,13 +502,15 @@ window.RUTAS_EXTRA = {};
     ["#/que-carta-eres", "🃏", "¿Qué carta del tarot eres?", "Ocho preguntas rápidas y te decimos qué arcano se parece más a ti.", "Hacer el test"],
     ["#/horoscopo", "♈&#xFE0E;", "Horóscopo del tarot", "Cada lunes, una carta nueva para tu signo: amor, trabajo y consejo.", "Ver mi semana"],
     ["#/mi-diario", "📖", "Mi diario de tiradas", "Tus tiradas y tu racha de cartas del día, guardadas solo para ti.", "Abrir mi diario"],
+    ["#/luna", "☽", "La luna y el tarot", "La fase de la luna de hoy, su calendario y la tirada que le toca.", "Ver la luna de hoy"],
+    ["#/practica", "🎯", "Modo práctica", "Aprende las 78 cartas jugando: adivina cuál es y qué significa.", "Empezar a practicar"],
   ];
   const tarjetaNovedad = ([href, icono, titulo, texto, boton]) => `<a class="tarjeta ex-novedad" href="${href}"><div class="icono">${icono}</div><h3>${titulo}</h3><p>${texto}</p><span class="mas">${boton} →</span></a>`;
   function vistaDescubre() {
     return `<section class="bloque"><div class="contenedor">
       <div class="centro estrecho" style="margin:0 auto 30px"><span class="ante">Para ti, gratis</span><h1>Descubre más con el tarot</h1>
       <p class="suave">Juegos, tests y lecturas para conocerte un poco mejor, compartir con quien quieras y volver cada día.</p></div>
-      <div class="rejilla r3">${NOVEDADES.map(tarjetaNovedad).join("")}
+      <div class="rejilla r4">${NOVEDADES.map(tarjetaNovedad).join("")}
         <a class="tarjeta ex-novedad" href="#/tarot-gratis/carta-del-dia"><div class="icono">☀</div><h3>Tu carta del día</h3><p>Una carta cada día. Sácala a diario y haz crecer tu racha.</p><span class="mas">Sacar mi carta →</span></a>
       </div>
     </div></section>`;
@@ -558,6 +561,292 @@ window.RUTAS_EXTRA = {};
     </div></section>`;
   }
 
+  // ---------- La luna ----------
+  // Se parte de una luna nueva conocida (6 de enero de 2000, 18:14 UTC) y se suman lunaciones
+  // de 29,530588853 días. A esa cuenta media se le aplican las correcciones principales
+  // (Jean Meeus, «Astronomical Algorithms», cap. 49), que ajustan cada fase a pocos minutos.
+  const SINODICO = 29.530588853;
+  const RAD = Math.PI / 180;
+  // tipo: 0 nueva, 0.25 cuarto creciente, 0.5 llena, 0.75 cuarto menguante → fecha (Date)
+  function momentoFase(k) {
+    const tipo = ((k % 1) + 1) % 1;
+    const T = k / 1236.85;
+    let jde = 2451550.09766 + SINODICO * k + 0.00015437 * T * T;
+    const E = 1 - 0.002516 * T - 0.0000074 * T * T;
+    const M = (2.5534 + 29.1053567 * k) * RAD;          // anomalía del Sol
+    const Mp = (201.5643 + 385.81693528 * k) * RAD;     // anomalía de la Luna
+    const F = (160.7108 + 390.67050284 * k) * RAD;      // argumento de latitud
+    const s = Math.sin;
+    if (tipo === 0 || tipo === 0.5) {
+      const a = tipo === 0 ? [-0.4072, 0.17241, 0.01608, 0.01039, 0.00739, -0.00514, 0.00208] : [-0.40614, 0.17302, 0.01614, 0.01043, 0.00734, -0.00515, 0.00209];
+      jde += a[0] * s(Mp) + a[1] * E * s(M) + a[2] * s(2 * Mp) + a[3] * s(2 * F) + a[4] * E * s(Mp - M) + a[5] * E * s(Mp + M) + a[6] * E * E * s(2 * M)
+        - 0.00111 * s(Mp - 2 * F) - 0.00057 * s(Mp + 2 * F) + 0.00056 * E * s(2 * Mp + M) - 0.00042 * s(3 * Mp);
+    } else {
+      jde += -0.62801 * s(Mp) + 0.17172 * E * s(M) - 0.01183 * E * s(Mp + M) + 0.00862 * s(2 * Mp) + 0.00804 * s(2 * F) + 0.00454 * E * s(Mp - M)
+        + 0.00204 * E * E * s(2 * M) - 0.0018 * s(Mp - 2 * F) - 0.0007 * s(Mp + 2 * F) - 0.0004 * s(3 * Mp) - 0.00034 * E * s(2 * Mp - M);
+      const W = 0.00306 - 0.00038 * E * Math.cos(M) + 0.00026 * Math.cos(Mp) - 0.00002 * Math.cos(Mp - M) + 0.00002 * Math.cos(Mp + M) + 0.00002 * Math.cos(2 * F);
+      jde += tipo === 0.25 ? W : -W;
+    }
+    return new Date((jde - 2440587.5) * 864e5);           // día juliano → fecha
+  }
+  // Las fases principales alrededor de una fecha (desde el cuarto anterior hasta ~40 días después)
+  function fasesCerca(fecha) {
+    const k0 = Math.floor(((fecha - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) / SINODICO) - 1;
+    const lista = [];
+    for (let k = k0; k < k0 + 4; k++) for (const q of [0, 0.25, 0.5, 0.75]) lista.push({ q, k: k + q, f: momentoFase(k + q) });
+    return lista;
+  }
+  const FASES = [
+    { nombre: "Luna nueva", corto: "Nueva", frase: "La luna está a oscuras y todo empieza de cero: buen momento para pensar qué quieres sembrar." },
+    { nombre: "Creciente", corto: "Creciente", frase: "La luz va ganando terreno: toca dar los primeros pasos y cuidar lo que acabas de empezar." },
+    { nombre: "Cuarto creciente", corto: "Cuarto crec.", frase: "Media luna que empuja: aparecen los primeros obstáculos y también las ganas de superarlos." },
+    { nombre: "Gibosa creciente", corto: "Gibosa crec.", frase: "Casi llena: es momento de ajustar, pulir detalles y tener un poco de paciencia." },
+    { nombre: "Luna llena", corto: "Llena", frase: "Todo se ilumina: lo que sembraste se ve claro, se celebra lo logrado y se suelta lo que pesa." },
+    { nombre: "Gibosa menguante", corto: "Gibosa meng.", frase: "Pasado el momento álgido, toca agradecer, compartir lo aprendido y ordenar." },
+    { nombre: "Cuarto menguante", corto: "Cuarto meng.", frase: "Media luna que se apaga: buen momento para revisar, perdonar y hacer limpieza." },
+    { nombre: "Menguante", corto: "Menguante", frase: "La luz se retira: descansa, suelta lo que sobra y prepárate para empezar de nuevo." },
+  ];
+  const inicioDia = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  // Estado de la luna en un momento y nombre de la fase para ese día (hora local)
+  function lunaDe(fecha = new Date()) {
+    const t = fecha.getTime(), lista = fasesCerca(fecha);
+    let i = 0; while (i < lista.length - 1 && lista[i + 1].f.getTime() <= t) i++;
+    const a = lista[i], b = lista[i + 1];
+    const f = (a.q + 0.25 * (t - a.f) / (b.f - a.f)) % 1;   // 0 nueva · 0,25 cuarto · 0,5 llena · 0,75 cuarto menguante
+    const ilum = Math.round(100 * (1 - Math.cos(2 * Math.PI * f)) / 2);
+    // Si una fase principal cae hoy, el día se llama así; si no, la fase intermedia
+    const d0 = inicioDia(fecha).getTime(), d1 = d0 + 864e5;
+    const hoyPrincipal = lista.find(x => x.f.getTime() >= d0 && x.f.getTime() < d1);
+    const fase = hoyPrincipal ? hoyPrincipal.q * 8 : [1, 3, 5, 7][Math.floor(f * 4)];
+    const proxima = q => lista.find(x => x.q === q && x.f.getTime() >= d0).f;
+    const dias = x => Math.round((inicioDia(x) - inicioDia(fecha)) / 864e5);
+    const llena = proxima(0.5), nueva = proxima(0);
+    return { f, ilum, fase, ...FASES[fase], llena, nueva, diasLlena: dias(llena), diasNueva: dias(nueva) };
+  }
+  // Tirada lunar que toca: la de luna nueva o llena unos días alrededor; entre medias, creciente o menguante
+  function tiradaLunar(l) {
+    const id = l.fase === 0 || l.f < 0.05 || l.f > 0.95 ? "luna-nueva" : l.fase === 4 || Math.abs(l.f - 0.5) < 0.05 ? "luna-llena" : l.f < 0.5 ? "luna-creciente" : "luna-menguante";
+    return TIRADAS.find(t => t.id === id);
+  }
+  const fechaCorta = d => `${d.getDate()} de ${MESES[d.getMonth()]}`;
+  const enDias = n => n === 0 ? "hoy" : n === 1 ? "mañana" : `en ${n} días`;
+
+  // Dibujo de la luna: disco en sombra + parte iluminada (a la derecha cuando crece, a la izquierda cuando mengua)
+  let nLuna = 0;
+  function svgLuna(f, tam = 120) {
+    const id = "exl" + (++nLuna), r = 48, c = 50;
+    const cos = Math.cos(2 * Math.PI * f), rx = Math.abs(cos) * r, gibosa = cos < 0, crece = f < 0.5;
+    const exterior = crece ? 1 : 0, interior = crece ? (gibosa ? 1 : 0) : (gibosa ? 0 : 1);
+    const luz = `M${c} ${c - r} A${r} ${r} 0 0 ${exterior} ${c} ${c + r} A${rx.toFixed(2)} ${r} 0 0 ${interior} ${c} ${c - r}Z`;
+    return `<svg class="ex-luna-svg" viewBox="0 0 100 100" width="${tam}" height="${tam}" role="img" aria-label="Dibujo de la luna de hoy">
+      <defs>
+        <radialGradient id="${id}l" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#fffdf6"/><stop offset=".65" stop-color="#fbeec9"/><stop offset="1" stop-color="#efd79a"/></radialGradient>
+        <radialGradient id="${id}s" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="#6d6390"/><stop offset="1" stop-color="#3d3358"/></radialGradient>
+      </defs>
+      <circle cx="${c}" cy="${c}" r="${r}" fill="url(#${id}s)" opacity=".55"/>
+      <path d="${luz}" fill="url(#${id}l)"/>
+      <g fill="#2b2340" opacity=".07"><circle cx="38" cy="36" r="8"/><circle cx="62" cy="58" r="11"/><circle cx="44" cy="70" r="5"/><circle cx="68" cy="30" r="4"/><circle cx="28" cy="56" r="5"/></g>
+      <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1"/>
+    </svg>`;
+  }
+
+  // Bloque «Hoy: …» (portada y página de la luna)
+  function bloqueLunaHoy(l, grande = false) {
+    const t = tiradaLunar(l);
+    const proximas = l.fase === 4 ? `🌕 ¡Hoy es luna llena! La próxima luna nueva, ${enDias(l.diasNueva)} (${fechaCorta(l.nueva)}).`
+      : l.fase === 0 ? `🌑 ¡Hoy es luna nueva! La próxima luna llena, ${enDias(l.diasLlena)} (${fechaCorta(l.llena)}).`
+      : l.diasLlena < l.diasNueva ? `🌕 Luna llena ${enDias(l.diasLlena)} (${fechaCorta(l.llena)}) · 🌑 Luna nueva ${enDias(l.diasNueva)}.`
+      : `🌑 Luna nueva ${enDias(l.diasNueva)} (${fechaCorta(l.nueva)}) · 🌕 Luna llena ${enDias(l.diasLlena)}.`;
+    return `<div class="ex-luna-hoy ${grande ? "ex-luna-grande" : ""}">
+      <div class="ex-luna-dibujo">${svgLuna(l.f, grande ? 210 : 120)}</div>
+      <div>
+        <span class="ante">La luna de hoy</span>
+        ${grande ? "<h1>" : "<h3>"}Hoy: ${l.nombre} <span class="ex-luna-pct">(${l.ilum} % iluminada)</span>${grande ? "</h1>" : "</h3>"}
+        <p>${l.frase}</p>
+        <p class="ex-luna-prox">${proximas}</p>
+        <div class="ex-compartir">
+          <a class="btn btn-oro" href="#/tarot-gratis/${t.id}">Hacer la tirada de ${t.id.replace("-", " ")}</a>
+          ${grande ? "" : `<a class="btn btn-linea" href="#/luna">Calendario lunar</a>`}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ---------- Página de la luna ----------
+  function vistaLuna() {
+    const ahora = new Date(), l = lunaDe(ahora);
+    const hoy0 = inicioDia(ahora);
+    let celdas = "";
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(hoy0.getFullYear(), hoy0.getMonth(), hoy0.getDate() + i, 12);
+      const x = lunaDe(d), principal = x.fase % 2 === 0;
+      celdas += `<div class="ex-cal-dia ${i === 0 ? "hoy" : ""} ${principal ? "principal" : ""}" title="${x.nombre} · ${x.ilum} %">
+        <span class="ex-cal-fecha">${i === 0 ? "Hoy" : DIAS[(d.getDay() + 6) % 7].slice(0, 3)} <strong>${d.getDate()}</strong>${i === 0 || d.getDate() === 1 ? ` <small>${MESES[d.getMonth()].slice(0, 3)}</small>` : ""}</span>
+        ${svgLuna(x.f, 38)}
+        <span class="ex-cal-nombre">${principal ? x.corto : x.ilum + " %"}</span>
+      </div>`;
+    }
+    const lunares = TIRADAS.filter(t => t.cat === "lunar");
+    return `<section class="bloque oscuro"><div class="contenedor">
+      <div class="miga"><a href="#/descubre">Descubre</a> › La luna y el tarot</div>
+      ${bloqueLunaHoy(l, true)}
+    </div></section>
+    <section class="bloque"><div class="contenedor">
+      <div class="centro estrecho" style="margin:0 auto 24px"><span class="ante">Los próximos 30 días</span><h2>Calendario lunar</h2>
+      <p class="suave">Así va a ir cambiando la luna, día a día. Los días de luna nueva, cuartos y luna llena van marcados.</p></div>
+      <div class="ex-cal">${celdas}</div>
+    </div></section>
+    <section class="bloque papel"><div class="contenedor">
+      <div class="centro estrecho" style="margin:0 auto 24px"><span class="ante">Tarot y luna</span><h2>Las cuatro tiradas de la luna</h2>
+      <p class="suave">Cada momento de la luna invita a algo distinto: empezar, empujar, celebrar o soltar. Puedes hacerlas cuando quieras, pero su momento ideal es el suyo.</p></div>
+      <div class="rejilla r4">${lunares.map(tarjetaTirada).join("")}</div>
+    </div></section>
+    <section class="bloque"><div class="contenedor">
+      <div class="centro"><span class="ante">Para entenderla</span><h2>Las ocho fases de la luna</h2></div>
+      <div class="ex-fases">${FASES.map((x, i) => `<div class="${i === l.fase ? "activa" : ""}">${svgLuna(i / 8, 56)}<div><strong>${x.nombre}</strong><p>${x.frase}</p></div></div>`).join("")}</div>
+      <p class="suave centro" style="font-size:.85rem;margin-top:22px">Las fases se calculan en tu navegador para la hora de tu móvil u ordenador. Pueden variar unas horas respecto a un calendario astronómico oficial.</p>
+    </div></section>`;
+  }
+
+  // Aviso en las propias tiradas lunares
+  function avisoTiradaLunar(id) {
+    const hueco = document.querySelector("#app .centro.estrecho");
+    if (!hueco || hueco.querySelector(".ex-luna-aviso")) return;
+    const l = lunaDe(), t = tiradaLunar(l);
+    hueco.insertAdjacentHTML("beforeend", `<div class="ex-luna-aviso">${svgLuna(l.f, 44)}<span>Hoy: <strong>${l.nombre}</strong> (${l.ilum} %). ${t.id === id ? "¡Es su momento ideal!" : `Hoy le toca más la <a href="#/tarot-gratis/${t.id}">${t.nombre.toLowerCase()}</a>, pero puedes hacer esta igual.`} <a href="#/luna">Ver calendario lunar</a></span></div>`);
+  }
+
+  // ---------- Modo práctica: aprender las 78 cartas ----------
+  const GRUPOS = { todas: "Todas", mayores: "Arcanos mayores", bastos: "Bastos", copas: "Copas", espadas: "Espadas", oros: "Oros" };
+  const enGrupo = (c, g) => g === "todas" || (g === "mayores" ? c.mayor : c.palo === g);
+  const progreso = () => leer("la-practica", { aciertos: 0, fallos: 0, racha: 0, mejor: 0, cartas: {} });
+  const dominadas = (p, g = "todas") => MAZO.filter(c => enGrupo(c, g) && (p.cartas[c.id] || 0) >= 3).length;
+  const P = { modo: "nombre", grupo: "todas", preg: null, ultima: null };
+
+  function nuevaPregunta() {
+    const p = progreso();
+    const monton = MAZO.filter(c => enGrupo(c, P.grupo));
+    // Las que aún no dominas salen el triple de veces
+    const bolsa = [];
+    monton.forEach(c => { if (c.id !== P.ultima) for (let i = (p.cartas[c.id] || 0) >= 3 ? 1 : 3; i > 0; i--) bolsa.push(c); });
+    const c = bolsa[Math.floor(Math.random() * bolsa.length)];
+    P.ultima = c.id;
+    let correcta, falsas;
+    if (P.modo === "nombre") {
+      correcta = c.nombre;
+      falsas = barajar(monton.filter(x => x.id !== c.id)).slice(0, 3).map(x => x.nombre);
+    } else {
+      correcta = c.claves[Math.floor(Math.random() * c.claves.length)];
+      const vistas = new Set(c.claves);
+      falsas = [];
+      for (const x of barajar(MAZO.filter(x => x.id !== c.id && enGrupo(x, P.grupo)))) {
+        const k = x.claves[Math.floor(Math.random() * x.claves.length)];
+        if (!vistas.has(k)) { vistas.add(k); falsas.push(k); }
+        if (falsas.length === 3) break;
+      }
+    }
+    P.preg = { c, correcta, opciones: barajar([correcta, ...falsas]), elegida: null };
+  }
+
+  function pintarPractica() {
+    const caja = document.getElementById("ex-pr"); if (!caja) return;
+    if (!P.preg) nuevaPregunta();
+    const { c, correcta, opciones, elegida } = P.preg, hecha = elegida !== null, bien = elegida === correcta;
+    const adivinar = P.modo === "nombre";
+    const clase = o => !hecha ? "" : o === correcta ? "ok" : o === elegida ? "mal" : "apagada";
+    caja.innerHTML = `<div class="ex-pr-juego">
+      <div class="ex-pr-carta ${adivinar && !hecha ? "ex-pr-oculto" : ""}">${adivinar && !hecha ? cartaHTML(c, { grande: true }).replace(/alt="[^"]*"/, 'alt="¿Qué carta es?"') : cartaHTML(c, { grande: true })}</div>
+      <div>
+        <p class="ex-num">${GRUPOS[P.grupo]} · ${adivinar ? "Adivina la carta" : "¿Qué significa?"}</p>
+        <h2>${adivinar ? "¿Qué carta es esta?" : `¿Qué palabra encaja con <em>${c.nombre}</em>?`}</h2>
+        <div class="ex-opciones ex-pr-opciones">${opciones.map((o, k) => `<button type="button" class="${clase(o)}" ${hecha ? "disabled" : ""} onclick="LA.prResponder(${k})"><span>${hecha && o === correcta ? "✓" : hecha && o === elegida ? "✗" : "ABCD"[k]}</span>${esc(o)}</button>`).join("")}</div>
+        ${hecha ? `<div class="ex-pr-respuesta ${bien ? "bien" : "fallo"}">
+          ${bien ? `<strong>¡Muy bien! 🌟</strong> ` : `<strong>Casi.</strong> ${adivinar ? `Es <strong>${c.nombre}</strong>.` : `Con ${c.nombre} va <strong>${esc(correcta)}</strong>.`} `}
+          Sus palabras clave: ${c.claves.join(", ")}.
+          <a href="#/significados/${c.id}">Ver su significado →</a>
+        </div>
+        <button type="button" class="btn btn-vino ex-pr-sig" onclick="LA.prSiguiente()">Siguiente carta →</button>` : ""}
+      </div>
+    </div>`;
+    pintarProgreso();
+  }
+
+  function pintarProgreso() {
+    const p = progreso(), total = p.aciertos + p.fallos;
+    const marcador = document.getElementById("ex-pr-marcador");
+    if (marcador) marcador.innerHTML = `
+      <div><span class="ex-llama">✓</span><strong>${p.aciertos}</strong><span>aciertos${total ? ` (${Math.round(100 * p.aciertos / total)} %)` : ""}</span></div>
+      <div><span class="ex-llama">🔥</span><strong>${p.racha}</strong><span>racha actual</span></div>
+      <div><span class="ex-llama">🏆</span><strong>${p.mejor}</strong><span>tu mejor racha</span></div>
+      <div><span class="ex-llama">☾</span><strong>${dominadas(p)}</strong><span>cartas que dominas</span></div>`;
+    const caja = document.getElementById("ex-pr-progreso"); if (!caja) return;
+    const d = dominadas(p);
+    caja.innerHTML = `<div class="centro"><span class="ante">Tu progreso</span><h2>Dominas ${d} de las 78 cartas</h2>
+      <p class="suave">Una carta cuenta como dominada cuando la aciertas <strong>3 veces seguidas</strong>. Si fallas, vuelve a empezar su cuenta.</p></div>
+      <div class="ex-barra ex-barra-grande"><div style="width:${(100 * d / 78).toFixed(1)}%"></div></div>
+      <div class="ex-pr-grupos">${Object.keys(GRUPOS).filter(g => g !== "todas").map(g => {
+        const n = MAZO.filter(c => enGrupo(c, g)).length, x = dominadas(p, g);
+        return `<div><div class="ex-pr-grupo-t"><strong>${GRUPOS[g]}</strong><span>${x} / ${n}</span></div><div class="ex-barra"><div style="width:${(100 * x / n).toFixed(1)}%"></div></div></div>`;
+      }).join("")}</div>
+      ${d === 78 ? `<p class="nota centro">🎉 ¡Dominas las 78 cartas! Ya puedes leer el tarot sin mirar la chuleta.</p>` : ""}
+      ${total ? `<p class="centro" style="margin-top:22px"><button type="button" class="ex-borrar" onclick="LA.prBorrar()">Empezar de cero</button></p>` : ""}`;
+  }
+
+  function vistaPractica() {
+    P.preg = null;
+    return `<section class="bloque oscuro"><div class="contenedor">
+      <div class="miga"><a href="#/descubre">Descubre</a> › Modo práctica</div>
+      <div class="centro estrecho" style="margin:0 auto 22px"><span class="ante">Aprende jugando</span><h1>Practica las 78 cartas</h1>
+      <p class="suave">Unos minutos al día y en unas semanas reconocerás cada carta y lo que significa. Tus aciertos se guardan solo en este móvil u ordenador.</p></div>
+      <div class="ex-pr-modos">
+        <button type="button" class="${P.modo === "nombre" ? "activo" : ""}" onclick="LA.prModo('nombre')"><strong>🃏 Adivina la carta</strong><span>Ves el dibujo y eliges su nombre</span></button>
+        <button type="button" class="${P.modo === "claves" ? "activo" : ""}" onclick="LA.prModo('claves')"><strong>✨ ¿Qué significa?</strong><span>Ves la carta y eliges su palabra clave</span></button>
+      </div>
+      <div class="filtros" style="margin:18px 0 22px">${Object.entries(GRUPOS).map(([k, v]) => `<button type="button" class="chip ${k === P.grupo ? "activo" : ""}" onclick="LA.prGrupo('${k}')">${v}</button>`).join("")}</div>
+      <div class="ex-stats ex-pr-marcador" id="ex-pr-marcador"></div>
+      <div class="ex-test ex-pr" id="ex-pr"></div>
+    </div></section>
+    <section class="bloque"><div class="contenedor estrecho" id="ex-pr-progreso"></div></section>`;
+  }
+
+  function prResponder(k) {
+    const q = P.preg; if (!q || q.elegida !== null) return;
+    q.elegida = q.opciones[k];
+    const p = progreso(), bien = q.elegida === q.correcta;
+    if (bien) { p.aciertos++; p.racha++; p.mejor = Math.max(p.mejor, p.racha); p.cartas[q.c.id] = (p.cartas[q.c.id] || 0) + 1; }
+    else { p.fallos++; p.racha = 0; p.cartas[q.c.id] = 0; }
+    guardar("la-practica", p);
+    if (bien && p.cartas[q.c.id] === 3) toast(`¡Ya dominas ${q.c.nombre}! ☾`);
+    pintarPractica();
+    const sig = document.querySelector(".ex-pr-sig"); if (sig) sig.focus({ preventScroll: true });
+  }
+  function prCambiar(clave, valor) {
+    P[clave] = valor; P.preg = null; P.ultima = null;
+    document.querySelectorAll(".ex-pr-modos button").forEach(b => b.classList.toggle("activo", b.getAttribute("onclick").includes(`'${P.modo}'`)));
+    document.querySelectorAll(".filtros .chip").forEach(b => b.classList.toggle("activo", b.getAttribute("onclick").includes(`'${P.grupo}'`)));
+    pintarPractica();
+  }
+  function prBorrar() {
+    if (!confirm("¿Seguro que quieres borrar tus aciertos y empezar de cero?")) return;
+    guardar("la-practica", { aciertos: 0, fallos: 0, racha: 0, mejor: 0, cartas: {} }); pintarProgreso(); toast("Progreso borrado");
+  }
+
+  // ---------- Portada: la luna de hoy y el modo práctica ----------
+  function bloqueLunaPortada() {
+    const p = progreso(), d = dominadas(p);
+    return `<section class="bloque"><div class="contenedor">
+      <div class="rejilla ex-luna-portada">
+        <div class="tarjeta ex-panel ex-panel-luna">${bloqueLunaHoy(lunaDe())}</div>
+        <div class="tarjeta ex-panel">
+          <span class="ante">Modo práctica</span><h3>Aprende las 78 cartas jugando</h3>
+          <p>Adivina la carta por su dibujo o acierta lo que significa. Unos minutos al día y las tendrás dominadas.</p>
+          <div class="ex-pr-mini"><div class="ex-barra"><div style="width:${(100 * d / 78).toFixed(1)}%"></div></div><span>${d ? `Dominas <strong>${d} de 78</strong>${p.mejor ? ` · mejor racha: ${p.mejor}` : ""}` : "Aún no has empezado: ¿cuántas reconoces?"}</span></div>
+          <div class="ex-compartir"><a class="btn btn-vino" href="#/practica">${d || p.aciertos ? "Seguir practicando" : "Empezar a practicar"}</a></div>
+        </div>
+      </div>
+    </div></section>`;
+  }
+
   // ---------- Rutas y enchufe tras pintar ----------
   const VISTAS = {
     "descubre": vistaDescubre,
@@ -566,6 +855,8 @@ window.RUTAS_EXTRA = {};
     "que-carta-eres": vistaTest,
     "horoscopo": vistaHoroscopo,
     "mi-diario": vistaDiario,
+    "luna": vistaLuna,
+    "practica": vistaPractica,
   };
   Object.entries(VISTAS).forEach(([k, f]) => window.RUTAS_EXTRA[k] = sub => { sincronizar(); return f(sub); });
   const MIAS = Object.keys(VISTAS);
@@ -578,7 +869,7 @@ window.RUTAS_EXTRA = {};
         const hero = document.querySelector("#app section.hero");
         if (hero) hero.insertAdjacentHTML("afterend", bloquePortada());
         const hueco = document.getElementById("extra-inicio");
-        if (hueco) hueco.innerHTML = bloqueNovedades();
+        if (hueco) hueco.innerHTML = bloqueLunaPortada() + bloqueNovedades();
       }
       if (sec === "tarot-gratis" && sub) {
         const l = document.getElementById("lectura");
@@ -595,6 +886,8 @@ window.RUTAS_EXTRA = {};
         }
       }
       if (sec === "que-carta-eres" && !sub) pintarPregunta();
+      if (sec === "practica") pintarPractica();
+      if (sec === "tarot-gratis" && sub && /^luna-/.test(sub) && TIRADAS.some(t => t.id === sub && t.cat === "lunar")) avisoTiradaLunar(sub);
       // Dar la vuelta a las cartas de resultado
       document.querySelectorAll(".ex-voltear.boca-abajo").forEach((c, i) => setTimeout(() => c.classList.remove("boca-abajo"), 350 + i * 250));
       // (el router marca el menú justo después, por eso se espera un instante)
@@ -604,7 +897,10 @@ window.RUTAS_EXTRA = {};
 
   // Lo que llaman los botones de la página
   window.LA = {
-    calcularArcano, calcularPareja, borrarDiario,
+    calcularArcano, calcularPareja, borrarDiario, prResponder, prBorrar,
+    prSiguiente() { nuevaPregunta(); pintarPractica(); },
+    prModo(m) { prCambiar("modo", m); },
+    prGrupo(g) { prCambiar("grupo", g); },
     responder(k) { respuestas.push(k); pintarPregunta(); },
     atras() { respuestas.pop(); pintarPregunta(); },
     miSigno(id) { guardar("la-mi-signo", id); toast("Hecho: lo verás en la portada ★"); router(); },

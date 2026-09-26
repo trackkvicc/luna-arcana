@@ -58,7 +58,7 @@ function vistaInicio() {
   <section class="bloque"><div class="contenedor">
     <div class="centro"><span class="ante">Empieza aquí</span><h2>Elige tu camino</h2><p class="suave">Tres puertas para entrar en el tarot.</p></div>
     <div class="rejilla r3" style="margin-top:30px">
-      <div class="tarjeta"><div class="icono">✦</div><h3>Tarot gratis</h3><p>Quince tiradas interactivas para el amor, el trabajo, el dinero o el día a día. Tú eliges las cartas.</p><a class="mas" href="#/tarot-gratis">Ver tiradas →</a></div>
+      <div class="tarjeta"><div class="icono">✦</div><h3>Tarot gratis</h3><p>${TIRADAS.length} tiradas interactivas para el amor, el trabajo, el dinero o el día a día. Tú eliges las cartas.</p><a class="mas" href="#/tarot-gratis">Ver tiradas →</a></div>
       <div class="tarjeta"><div class="icono">☾</div><h3>Significados</h3><p>Las 78 cartas explicadas al derecho y del revés, con su lectura en el amor, en el trabajo y un consejo.</p><a class="mas" href="#/significados">Ver las cartas →</a></div>
       <div class="tarjeta"><div class="icono">⟡</div><h3>Aprende a leer</h3><p>Guías sencillas para echar las cartas tú mismo: paso a paso, tiradas, palos, invertidas y combinaciones.</p><a class="mas" href="#/aprende">Empezar a aprender →</a></div>
     </div>
@@ -309,6 +309,7 @@ function vistaCarta(id) {
           <div class="caja"><h4>En el trabajo y el dinero</h4><p>${c.trabajo}</p></div>
         </div>
         <div class="caja"><h4>Consejo</h4><p>${c.consejo}</p><p style="margin:0"><strong>En una tirada de sí o no:</strong> ${c.sino}.</p></div>
+        <p style="margin-top:14px"><a href="cartas/${c.id}/">Ficha completa de ${c.nombre}: pasado, presente, futuro y preguntas frecuentes →</a></p>
         <div style="display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap">
           <a class="btn btn-linea" href="#/significados/${ant.id}">← ${ant.nombre}</a>
           <a class="btn btn-linea" href="#/significados/${sig.id}">${sig.nombre} →</a>
@@ -611,6 +612,9 @@ function router() {
   if (window.alPintar) window.alPintar(sec, sub);  // gancho para js/extras.js
   document.querySelectorAll("nav.menu a").forEach(a => a.classList.toggle("activo", a.dataset.sec === sec || (sec === "tienda-guia" && a.dataset.sec === "tienda")));
   document.querySelector("nav.menu").classList.remove("abierto");
+  // Título de la pestaña: el de la página, o el general en la portada
+  const h1 = $app.querySelector("h1");
+  document.title = sec && h1 ? `${h1.textContent.trim()} · Luna Arcana` : "Luna Arcana · Tarot gratis, significados y tienda";
   window.scrollTo(0, 0);
 }
 

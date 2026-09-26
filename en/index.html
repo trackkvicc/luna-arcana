@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luna Arcana · Free tarot readings, card meanings and shop</title>
+<meta name="description" content="Free online tarot readings, the meanings of all 78 cards, guides to learn how to read tarot and a shop with decks and accessories.">
+<link rel="canonical" href="https://trackkvicc.github.io/luna-arcana/en/">
+<link rel="alternate" hreflang="es" href="https://trackkvicc.github.io/luna-arcana/">
+<link rel="alternate" hreflang="en" href="https://trackkvicc.github.io/luna-arcana/en/">
+<link rel="alternate" hreflang="x-default" href="https://trackkvicc.github.io/luna-arcana/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Luna Arcana"><meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Luna Arcana · Free tarot readings, card meanings and shop">
+<meta property="og:description" content="Get a free tarot reading, discover your card of the day and learn what each of the 78 cards means.">
+<meta property="og:image" content="https://trackkvicc.github.io/luna-arcana/img/og.jpg">
+<meta property="og:url" content="https://trackkvicc.github.io/luna-arcana/en/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../img/favicon-32.png"><link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#fbf7f1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/estilo.css?v=16">
+<link rel="stylesheet" href="../css/extras.css?v=16">
+</head>
+<body>
+<div class="aviso-top">✨ Free card of the day, a new one every day · <a href="#/tarot-gratis/carta-del-dia">Draw yours</a></div>
+<header class="cab">
+  <div class="contenedor">
+    <a class="marca" href="#/"><span class="luna">☾</span> Luna Arcana</a>
+    <button class="hamburguesa" aria-label="Open menu" onclick="document.querySelector('nav.menu').classList.toggle('abierto')">☰</button>
+    <nav class="menu">
+      <a href="#/tarot-gratis" data-sec="tarot-gratis">Free tarot</a>
+      <a href="#/significados" data-sec="significados">Meanings</a>
+      <a href="#/aprende" data-sec="aprende">Learn</a>
+      <a href="#/tienda" data-sec="tienda">Shop</a>
+      <a href="#/descubre" data-sec="descubre">Discover ✨</a>
+      <a href="#/lectura-personalizada" data-sec="lectura-personalizada">Personal reading</a>
+      <a href="../" class="idioma" hreflang="es" lang="es" title="Versión en español" style="font-size:.78rem;letter-spacing:.06em;opacity:.7" onclick="location.href='../'+location.hash;return false">ES</a>
+      <a href="#/carrito" class="btn-carrito" data-sec="carrito">🛒<span class="contador" id="contador">0</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="rejilla">
+      <div>
+        <a class="marca" href="#/" style="margin-bottom:12px"><span class="luna">☾</span> Luna Arcana</a>
+        <p>Free tarot, friendly guides and decks for reading the cards calmly and with a clear head.</p>
+      </div>
+      <div>
+        <h4>Free tarot</h4>
+        <a href="#/tarot-gratis/carta-del-dia">Card of the day</a>
+        <a href="#/tarot-gratis/si-o-no">Yes or no tarot</a>
+        <a href="#/tarot-gratis/pasado-presente-futuro">Past, present and future</a>
+        <a href="#/tarot-gratis/cruz-celta">Celtic Cross</a>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="#/significados">Card meanings</a>
+        <a href="#/aprende/como-leer-el-tarot">How to read tarot</a>
+        <a href="#/aprende/tipos-de-tiradas">Types of spreads</a>
+        <a href="#/aprende/cartas-invertidas">Reversed cards</a>
+        <a href="#/practica">Practise the 78 cards</a>
+      </div>
+      <div>
+        <h4>Discover</h4>
+        <a href="#/arcano-personal">Your birth card</a>
+        <a href="#/compatibilidad">Love compatibility</a>
+        <a href="#/que-carta-eres">Which tarot card are you?</a>
+        <a href="#/horoscopo">Tarot horoscope</a>
+        <a href="#/luna">Today's moon</a>
+        <a href="#/mi-diario">My reading journal</a>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <a href="#/tienda">Decks and accessories</a>
+        <a href="#/legal/envios">Shipping and returns</a>
+        <a href="#/legal/condiciones">Terms of sale</a>
+        <a href="#/contacto">Contact</a>
+      </div>
+    </div>
+    <div class="legal-pie">
+      Tarot is a tool for reflection and entertainment. Readings are not a substitute for advice from health, legal or financial professionals.
+      <br><a href="#/legal/aviso-legal" style="display:inline">Legal notice</a> · <a href="#/legal/privacidad" style="display:inline">Privacy</a> · <a href="#/legal/cookies" style="display:inline">Cookies</a> · © <span id="anio"></span> Luna Arcana
+    </div>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script src="js/cartas.js?v=16"></script>
+<script src="js/contenido.js?v=16"></script>
+<script src="js/extras.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "Luna Arcana · Tarot",
+  "short_name": "Luna Arcana",
+  "description": "Free tarot, card of the day and the meanings of all 78 cards.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fbf7f1",
+  "theme_color": "#fbf7f1",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "../img/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../img/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

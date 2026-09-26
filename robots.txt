@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://trackkvicc.github.io/luna-arcana/sitemap.xml

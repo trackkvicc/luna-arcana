@@ -52,9 +52,24 @@ const TIRADAS = [
     desc: "Qué energía rodea hoy tus asuntos de dinero.", pos: [{ t: "Hoy con el dinero", campo: "trabajo" }] },
   { id: "hoy-salud", nombre: "Tarot de hoy: energía", cat: "diarias", n: 1,
     desc: "Cómo andan hoy tu ánimo y tu energía. (No sustituye a ningún consejo médico.)", pos: [{ t: "Tu energía hoy", campo: "consejo" }] },
+  // Tiradas según la luna (la página #/luna dice cuál toca hoy)
+  { id: "luna-nueva", nombre: "Intenciones de luna nueva", cat: "lunar", n: 5,
+    desc: "Con la luna nueva empieza un ciclo: aclara qué quieres sembrar y qué intención te acompaña este mes.",
+    pos: [{ t: "Dónde estás ahora", campo: "derecho" }, { t: "Lo que quieres sembrar", campo: "derecho" }, { t: "Lo que necesitas para que crezca", campo: "consejo" },
+          { t: "Lo que te puede frenar", campo: "derecho" }, { t: "Tu intención para este ciclo", campo: "consejo" }] },
+  { id: "luna-creciente", nombre: "Impulso de luna creciente", cat: "lunar", n: 3,
+    desc: "Mientras la luna crece: qué se ha puesto en marcha, cómo darle empuje y cuál es tu siguiente paso.",
+    pos: [{ t: "Lo que está creciendo", campo: "derecho" }, { t: "Cómo darle impulso", campo: "trabajo" }, { t: "Tu siguiente paso", campo: "consejo" }] },
+  { id: "luna-llena", nombre: "Ritual de luna llena", cat: "lunar", n: 5,
+    desc: "Con la luna llena todo se ve más claro: qué llega a su punto, qué celebrar y qué te toca soltar.",
+    pos: [{ t: "Lo que culmina", campo: "derecho" }, { t: "Lo que ahora ves claro", campo: "derecho" }, { t: "Lo que puedes celebrar", campo: "amor" },
+          { t: "Lo que te toca soltar", campo: "derecho" }, { t: "El consejo de la luna", campo: "consejo" }] },
+  { id: "luna-menguante", nombre: "Soltar con la luna menguante", cat: "lunar", n: 3,
+    desc: "Cuando la luna mengua toca aligerar: qué dejar ir, cómo descansar y qué te llevas de este ciclo.",
+    pos: [{ t: "Lo que puedes soltar", campo: "derecho" }, { t: "Cómo descansar y recargar", campo: "consejo" }, { t: "Lo que te llevas del ciclo", campo: "derecho" }] },
 ];
 
-const CATEGORIAS = { todas: "Todas", generales: "Generales", amor: "Amor y pareja", trabajo: "Trabajo y dinero", diarias: "Del día" };
+const CATEGORIAS = { todas: "Todas", generales: "Generales", amor: "Amor y pareja", trabajo: "Trabajo y dinero", diarias: "Del día", lunar: "Según la luna" };
 
 const GUIAS = [
   { id: "como-leer-el-tarot", titulo: "Cómo leer el tarot paso a paso", icono: "☾",
