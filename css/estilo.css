@@ -1,0 +1,256 @@
+:root {
+  --noche: #2b2340;      /* tinta: textos y títulos */
+  --noche-2: #3d3358;
+  --vino: #d0577f;       /* rosa: acción principal */
+  --vino-2: #b8406a;
+  --turquesa: #2a9ea3;
+  --turquesa-2: #1f8488;
+  --oro: #c9973c;
+  --oro-claro: #f3dca4;
+  --crema: #fbf7f1;
+  --papel: #ffffff;
+  --tinta: #2b2340;
+  --gris: #6f6680;
+  --linea: #ece3d6;
+  --radio: 18px;
+  --sombra: 0 12px 34px rgba(43, 35, 64, .08);
+  --acuarela: radial-gradient(ellipse at 12% 20%, rgba(111, 211, 214, .55) 0, transparent 45%),
+              radial-gradient(ellipse at 85% 15%, rgba(247, 161, 196, .55) 0, transparent 45%),
+              radial-gradient(ellipse at 70% 90%, rgba(255, 226, 150, .55) 0, transparent 50%),
+              radial-gradient(ellipse at 20% 95%, rgba(178, 139, 255, .30) 0, transparent 45%);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Inter", system-ui, -apple-system, sans-serif;
+  --mano: "Caveat", cursive;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--crema); color: var(--tinta); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
+img { max-width: 100%; }
+a { color: var(--vino); }
+h1, h2, h3 { font-family: var(--serif); line-height: 1.15; margin: 0 0 .5em; color: var(--noche); }
+h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 600; }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 600; }
+h3 { font-size: 1.45rem; font-weight: 600; }
+p { margin: 0 0 1em; }
+.contenedor { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+.estrecho { max-width: 760px; }
+.centro { text-align: center; }
+.ante { font-family: var(--mano); font-size: 1.5rem; color: var(--turquesa); font-weight: 700; margin-bottom: .2em; display: block; line-height: 1.1; }
+.suave { color: var(--gris); }
+
+/* Barra superior y cabecera */
+.aviso-top { background: linear-gradient(90deg, #6fd3d6, #f7a1c4, #ffd98a); color: var(--tinta); font-size: .88rem; text-align: center; padding: 8px 16px; font-weight: 500; }
+.aviso-top a { color: var(--tinta); font-weight: 700; }
+header.cab { background: rgba(255, 255, 255, .85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--tinta); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--linea); }
+.cab .contenedor { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+.marca { display: flex; align-items: center; gap: 8px; color: var(--tinta); text-decoration: none; font-family: var(--mano); font-size: 2rem; font-weight: 700; }
+.marca .luna { color: var(--oro); font-size: 1.6rem; font-family: var(--serif); }
+nav.menu { display: flex; gap: 4px; align-items: center; }
+nav.menu a { color: var(--tinta); text-decoration: none; font-size: .93rem; padding: 8px 12px; border-radius: 999px; font-weight: 500; }
+nav.menu a:hover, nav.menu a.activo { background: #eaf7f7; color: var(--turquesa-2); }
+.btn-carrito { position: relative; }
+.contador { background: var(--vino); color: #fff; border-radius: 999px; font-size: .72rem; font-weight: 700; padding: 1px 7px; margin-left: 4px; }
+.hamburguesa { display: none; background: none; border: 0; color: var(--tinta); font-size: 1.6rem; cursor: pointer; }
+
+/* Botones */
+.btn { display: inline-block; border: 0; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: .95rem; padding: 13px 24px; border-radius: 999px; text-decoration: none; transition: transform .15s, background .15s; }
+.btn:hover { transform: translateY(-1px); }
+.btn-oro { background: linear-gradient(135deg, var(--turquesa), #57b9c7); color: #fff; box-shadow: 0 8px 20px rgba(42, 158, 163, .3); }
+.btn-oro:hover { background: linear-gradient(135deg, var(--turquesa-2), var(--turquesa)); }
+.btn-vino { background: linear-gradient(135deg, var(--vino), #e98aa5); color: #fff; box-shadow: 0 8px 20px rgba(208, 87, 127, .28); }
+.btn-vino:hover { background: linear-gradient(135deg, var(--vino-2), var(--vino)); }
+.btn-linea { background: transparent; color: var(--noche); border: 1.5px solid var(--noche); }
+.btn-linea-claro { background: rgba(255,255,255,.6); color: var(--tinta); border: 1.5px solid var(--tinta); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* Portada */
+.hero { background: var(--acuarela), var(--crema); color: var(--tinta); padding: 80px 0 90px; position: relative; overflow: hidden; }
+.hero .contenedor { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; position: relative; }
+.hero h1 { color: var(--tinta); }
+.hero h1 em { font-family: var(--mano); font-style: normal; font-weight: 700; color: var(--vino); font-size: 1.15em; }
+.hero p { color: var(--gris); font-size: 1.12rem; max-width: 520px; }
+.hero .acciones { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.abanico { position: relative; height: 330px; }
+.abanico .carta { position: absolute; left: 50%; top: 20px; width: 150px; transform-origin: 50% 120%; }
+
+section.bloque { padding: 72px 0; }
+section.oscuro { background: var(--acuarela), #f4f1fa; color: var(--tinta); }
+section.papel { background: var(--papel); }
+
+.rejilla { display: grid; gap: 22px; }
+.r3 { grid-template-columns: repeat(3, 1fr); }
+.r4 { grid-template-columns: repeat(4, 1fr); }
+.r2 { grid-template-columns: repeat(2, 1fr); }
+
+.tarjeta { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 26px; box-shadow: var(--sombra); display: flex; flex-direction: column; }
+.tarjeta .icono { font-size: 2rem; color: var(--oro); margin-bottom: 8px; font-family: var(--serif); }
+.tarjeta p { color: var(--gris); flex: 1; }
+.tarjeta a.mas { font-weight: 600; text-decoration: none; }
+section.oscuro .tarjeta { background: rgba(255,255,255,.8); backdrop-filter: blur(6px); }
+
+/* Catálogo de tiradas */
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 10px 0 30px; }
+.chip { border: 1.5px solid var(--linea); background: var(--papel); border-radius: 999px; padding: 8px 16px; font-size: .9rem; cursor: pointer; font-family: var(--sans); color: var(--tinta); }
+.chip.activo { background: var(--turquesa); color: #fff; border-color: var(--turquesa); }
+.tirada-item { text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
+.tirada-item:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(28,19,48,.18); }
+.num-cartas { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--turquesa-2); background: #e4f5f5; border-radius: 999px; padding: 3px 10px; margin-bottom: 10px; align-self: flex-start; }
+
+/* Cartas */
+.carta { --c1: #3b2862; --c2: #1c1330; width: 120px; aspect-ratio: 7 / 12; border-radius: 10px; position: relative; perspective: 900px; flex: none; }
+.carta .caras { position: absolute; inset: 0; transition: transform .7s cubic-bezier(.3,.7,.3,1); transform-style: preserve-3d; }
+.carta.boca-abajo .caras { transform: rotateY(180deg); }
+.carta .cara, .carta .dorso { position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; background: #e9e4f2; box-shadow: 0 8px 22px rgba(43,35,64,.28); }
+.carta .cara { color: #fff; }
+.carta .cara > img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 10px; display: block; object-fit: cover; background: linear-gradient(160deg, #bfe7ff, #f7a1c4); }
+.carta .centro-c { position: absolute; left: 0; right: 0; top: 18%; height: 55%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.carta .simbolo { font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", "Noto Sans Symbols 2", serif; font-variant-emoji: text; font-size: 3em; line-height: 1; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,.9), 0 0 2px #1d1530, 1px 1px 0 rgba(29,21,48,.5); }
+.carta .corte { font-family: "Caveat", cursive; font-size: 1.05em; color: #fff; text-shadow: 0 0 6px rgba(29,21,48,.6); margin-top: .1em; }
+.carta .titulo-c { position: absolute; left: 10%; right: 6%; bottom: 4.5%; font-family: "Caveat", cursive; font-weight: 700; font-size: 1.15em; line-height: 1; color: #fff; text-shadow: 0 1px 2px #1d1530, 0 0 6px rgba(29,21,48,.9), 0 0 1px #1d1530; text-align: left; }
+.carta.invertida .cara > * { transform: rotate(180deg); }
+.carta .dorso { transform: rotateY(180deg); }
+.carta .dorso::before { content: "☾"; position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2em; text-shadow: 0 0 12px #fff;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.55) 0 8%, transparent 22%), radial-gradient(ellipse at 30% 25%, #ff9ad5 0, transparent 45%), radial-gradient(ellipse at 75% 75%, #6fd3d6 0, transparent 50%), radial-gradient(circle at 50% 50%, transparent 30%, rgba(255,255,255,.35) 31%, transparent 32%), linear-gradient(160deg, #2a8fa3, #3a2f8f 55%, #1c1330); }
+.carta .dorso::after { content: ""; position: absolute; inset: 0; border-radius: 10px; border: 2px solid rgba(255,255,255,.5); background-image: radial-gradient(1px 1px at 20% 30%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 70% 15%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 85% 60%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 15% 80%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 55% 88%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 40% 55%, #fff 50%, transparent 51%); }
+.carta .pips { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: .15em .35em; width: 80%; font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", serif; color: #fff; text-shadow: 0 0 6px rgba(255,255,255,.8), 0 0 1px #1d1530; line-height: 1; }
+.carta .pips i { font-style: normal; font-size: 1.15em; width: 1.3em; text-align: center; }
+.carta .pips.p1 i { font-size: 2.8em; }
+.carta .pips.p2 i, .carta .pips.p3 i { font-size: 1.7em; width: 100%; }
+.carta .pips.p4 i, .carta .pips.p5 i, .carta .pips.p6 i { font-size: 1.35em; }
+
+/* Mesa de tirada */
+.mesa { background: var(--acuarela), #fdfbf8; border: 1px solid var(--linea); border-radius: 24px; padding: 28px; box-shadow: var(--sombra); }
+.mesa-morada { }
+.mazo-elegir { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; padding: 10px 0 30px; }
+.mazo-elegir .carta { width: 64px; margin: 0 -14px -40px 0; cursor: pointer; transition: transform .18s; }
+.mazo-elegir .carta:hover { transform: translateY(-14px); z-index: 5; }
+.mazo-elegir .carta.elegida { visibility: hidden; }
+.posiciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 10px; }
+.hueco { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 130px; }
+.hueco .vacio { width: 110px; aspect-ratio: 7/12; border: 2px dashed rgba(43,35,64,.25); background: rgba(255,255,255,.45); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--turquesa); font-family: var(--mano); font-size: 2rem; }
+.hueco .carta { width: 110px; }
+.hueco .etiqueta { color: var(--tinta); font-size: .8rem; text-align: center; font-weight: 600; letter-spacing: .02em; }
+.estado-tirada { text-align: center; color: var(--tinta); margin-bottom: 14px; font-size: 1.05rem; }
+.estado-tirada strong { color: var(--vino); }
+
+/* Cruz celta en rejilla */
+.cruz { display: grid; grid-template-columns: repeat(4, 130px) 40px 130px; grid-template-rows: repeat(4, auto); gap: 14px 10px; justify-content: center; }
+.cruz .hueco { width: 130px; }
+.cruz .p1 { grid-column: 2; grid-row: 2; } .cruz .p2 { grid-column: 3; grid-row: 2; }
+.cruz .p3 { grid-column: 2 / span 2; grid-row: 3; justify-self: center; } .cruz .p4 { grid-column: 1; grid-row: 2; }
+.cruz .p5 { grid-column: 2 / span 2; grid-row: 1; justify-self: center; } .cruz .p6 { grid-column: 4; grid-row: 2; }
+.cruz .p7 { grid-column: 6; grid-row: 4; } .cruz .p8 { grid-column: 6; grid-row: 3; }
+.cruz .p9 { grid-column: 6; grid-row: 2; } .cruz .p10 { grid-column: 6; grid-row: 1; }
+
+/* Lectura */
+.lectura { margin-top: 36px; }
+.lectura-item { display: grid; grid-template-columns: 130px 1fr; gap: 24px; background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px; margin-bottom: 16px; box-shadow: var(--sombra); align-items: start; }
+.lectura-item .carta { width: 120px; }
+.lectura-item .pos { font-family: var(--mano); font-size: 1.35rem; color: var(--turquesa); font-weight: 700; }
+.lectura-item h3 { margin: 4px 0 8px; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.etiquetas span { font-size: .78rem; background: #e4f5f5; color: var(--turquesa-2); padding: 2px 10px; border-radius: 999px; }
+.etiquetas.inv span { background: #fbe6ee; color: var(--vino-2); }
+.resumen { background: var(--acuarela), #fff; border: 1px solid var(--linea); color: var(--tinta); border-radius: var(--radio); padding: 28px; margin-top: 20px; }
+.resumen h3 { color: var(--tinta); }
+.veredicto { font-family: var(--mano); font-size: 4.2rem; color: var(--vino); font-weight: 600; line-height: 1; margin: 6px 0 12px; }
+
+/* Formularios */
+label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 6px; }
+input[type=text], input[type=email], input[type=tel], textarea, select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--linea); border-radius: 10px; font-family: var(--sans); font-size: 1rem; background: #fff; color: var(--tinta); }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--oro); }
+.campo { margin-bottom: 16px; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: .88rem; }
+.check input { margin-top: 4px; }
+.nota { background: #fff6dc; border: 1px solid #f0dca0; color: #6b5210; border-radius: 10px; padding: 12px 16px; font-size: .9rem; margin: 16px 0; }
+.ok { background: #e3f4e8; border: 1px solid #b6dcc1; color: #1f5e33; border-radius: 10px; padding: 12px 16px; margin: 16px 0; }
+
+/* Guía de cartas */
+.rejilla-cartas { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 22px 16px; }
+.rejilla-cartas a { text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: .85rem; text-align: center; font-weight: 500; }
+.rejilla-cartas .carta { width: 100%; max-width: 118px; font-size: 13px; transition: transform .15s; }
+.rejilla-cartas a:hover .carta { transform: translateY(-4px); }
+.ficha-carta { display: grid; grid-template-columns: 260px 1fr; gap: 44px; align-items: start; }
+.ficha-carta .carta { width: 240px; font-size: 26px; }
+.dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+.caja { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 20px; }
+.caja h4 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.2rem; color: var(--vino); }
+
+/* Artículos */
+.articulo { background: var(--papel); border-radius: var(--radio); padding: 44px; box-shadow: var(--sombra); }
+.articulo h2 { margin-top: 1.2em; font-size: 1.8rem; }
+.articulo ul, .articulo ol { padding-left: 22px; }
+.articulo li { margin-bottom: 6px; }
+.miga { font-size: .88rem; color: var(--gris); margin-bottom: 14px; }
+.miga a { color: var(--gris); }
+
+/* Tienda */
+.producto { text-decoration: none; color: inherit; }
+.producto .foto { aspect-ratio: 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; position: relative; overflow: hidden; }
+.producto .foto .carta { width: 70px; font-size: 9px; position: absolute; }
+.precio { font-family: var(--serif); font-size: 1.5rem; color: var(--vino); font-weight: 700; }
+.etiqueta-prod { position: absolute; top: 10px; left: 10px; background: var(--oro); color: var(--noche); font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; z-index: 3; }
+.ficha-prod { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
+.ficha-prod .foto { aspect-ratio: 1; }
+.ficha-prod .foto .carta { width: 130px; font-size: 16px; }
+.cantidad { display: inline-flex; align-items: center; border: 1.5px solid var(--linea); border-radius: 999px; overflow: hidden; background: #fff; }
+.cantidad button { background: none; border: 0; width: 38px; height: 40px; font-size: 1.2rem; cursor: pointer; color: var(--tinta); }
+.cantidad span { min-width: 30px; text-align: center; font-weight: 600; }
+.linea-carrito { display: grid; grid-template-columns: 70px 1fr auto auto; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+.miniatura { width: 70px; height: 70px; border-radius: 10px; }
+.quitar { background: none; border: 0; color: var(--gris); cursor: pointer; font-size: .85rem; text-decoration: underline; }
+.totales { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 24px; }
+.totales .fila { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.totales .total { font-size: 1.25rem; font-weight: 700; border-top: 1px solid var(--linea); padding-top: 12px; margin-top: 12px; }
+
+/* FAQ */
+details { background: var(--papel); border: 1px solid var(--linea); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; }
+summary { font-weight: 600; cursor: pointer; }
+details p { margin: 10px 0 0; color: var(--gris); }
+
+/* Suscripción */
+.suscripcion { background: radial-gradient(ellipse at 10% 10%, rgba(255,226,150,.7) 0, transparent 50%), linear-gradient(135deg, #fbd3e0 0%, #d9f2f2 100%); color: var(--tinta); border-radius: 20px; padding: 44px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px; align-items: center; }
+.suscripcion h2 { color: var(--tinta); }
+.suscripcion ul { list-style: none; padding: 0; margin: 0; }
+.suscripcion li { margin-bottom: 8px; color: var(--tinta); }
+.suscripcion label { color: var(--tinta); }
+.suscripcion .check { color: var(--gris); }
+
+/* Pie */
+footer.pie { background: var(--acuarela), #f4f1fa; color: var(--gris); border-top: 1px solid var(--linea); padding: 56px 0 30px; font-size: .9rem; }
+footer.pie .rejilla { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+footer.pie h4 { color: var(--tinta); font-family: var(--serif); font-size: 1.2rem; margin: 0 0 12px; }
+footer.pie a { color: var(--gris); text-decoration: none; display: block; margin-bottom: 6px; }
+footer.pie a:hover { color: var(--turquesa-2); }
+.legal-pie { border-top: 1px solid var(--linea); margin-top: 36px; padding-top: 20px; font-size: .8rem; color: var(--gris); }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--noche); color: #fff; padding: 14px 22px; border-radius: 999px; box-shadow: var(--sombra); transition: transform .3s; z-index: 100; font-size: .95rem; }
+.toast.visible { transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 900px) {
+  .hamburguesa { display: block; }
+  nav.menu { display: none; position: absolute; top: 68px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--linea); flex-direction: column; align-items: stretch; padding: 10px 16px 18px; }
+  nav.menu.abierto { display: flex; }
+  .hero .contenedor, .suscripcion, .ficha-carta, .ficha-prod { grid-template-columns: 1fr; }
+  .abanico { height: 260px; }
+  .abanico .carta { width: 118px; }
+  .r3, .r4 { grid-template-columns: repeat(2, 1fr); }
+  footer.pie .rejilla { grid-template-columns: 1fr 1fr; }
+  .cruz { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cruz .hueco { grid-column: auto !important; grid-row: auto !important; width: auto; }
+  .ficha-carta .carta { width: 200px; margin: 0 auto; }
+}
+@media (max-width: 600px) {
+  section.bloque { padding: 52px 0; }
+  .r2, .r3, .r4, .dos-col { grid-template-columns: 1fr; }
+  .rejilla.productos { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .lectura-item { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .lectura-item .etiquetas { justify-content: center; }
+  .articulo, .suscripcion { padding: 26px 20px; }
+  .hueco { width: 100px; } .hueco .vacio, .hueco .carta { width: 90px; }
+  .mazo-elegir .carta { width: 52px; margin: 0 -12px -34px 0; }
+  .linea-carrito { grid-template-columns: 56px 1fr; }
+  .miniatura { width: 56px; height: 56px; }
+  footer.pie .rejilla { grid-template-columns: 1fr; }
+}

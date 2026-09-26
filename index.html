@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luna Arcana · Tarot gratis, significados y tienda</title>
+<meta name="description" content="Tiradas de tarot gratis online, significados de las 78 cartas, guías para aprender a leer el tarot y tienda de barajas y accesorios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css?v=10">
+</head>
+<body>
+<div class="aviso-top">✨ Carta del día gratis, cada día una nueva · <a href="#/tarot-gratis/carta-del-dia">Descúbrela</a></div>
+<header class="cab">
+  <div class="contenedor">
+    <a class="marca" href="#/"><span class="luna">☾</span> Luna Arcana</a>
+    <button class="hamburguesa" aria-label="Abrir menú" onclick="document.querySelector('nav.menu').classList.toggle('abierto')">☰</button>
+    <nav class="menu">
+      <a href="#/tarot-gratis" data-sec="tarot-gratis">Tarot gratis</a>
+      <a href="#/significados" data-sec="significados">Significados</a>
+      <a href="#/aprende" data-sec="aprende">Aprende</a>
+      <a href="#/tienda" data-sec="tienda">Tienda</a>
+      <a href="#/lectura-personalizada" data-sec="lectura-personalizada">Lectura personal</a>
+      <a href="#/carrito" class="btn-carrito" data-sec="carrito">🛒<span class="contador" id="contador">0</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="rejilla">
+      <div>
+        <a class="marca" href="#/" style="margin-bottom:12px"><span class="luna">☾</span> Luna Arcana</a>
+        <p>Tarot gratis, divulgación y barajas para leer las cartas con calma y con cabeza.</p>
+      </div>
+      <div>
+        <h4>Tarot gratis</h4>
+        <a href="#/tarot-gratis/carta-del-dia">Carta del día</a>
+        <a href="#/tarot-gratis/si-o-no">Tarot sí o no</a>
+        <a href="#/tarot-gratis/pasado-presente-futuro">Pasado, presente y futuro</a>
+        <a href="#/tarot-gratis/cruz-celta">Cruz celta</a>
+      </div>
+      <div>
+        <h4>Aprende</h4>
+        <a href="#/significados">Significados de las cartas</a>
+        <a href="#/aprende/como-leer-el-tarot">Cómo leer el tarot</a>
+        <a href="#/aprende/tipos-de-tiradas">Tipos de tiradas</a>
+        <a href="#/aprende/cartas-invertidas">Cartas invertidas</a>
+      </div>
+      <div>
+        <h4>Tienda</h4>
+        <a href="#/tienda">Barajas y accesorios</a>
+        <a href="#/legal/envios">Envíos y devoluciones</a>
+        <a href="#/legal/condiciones">Condiciones de venta</a>
+        <a href="#/contacto">Contacto</a>
+      </div>
+    </div>
+    <div class="legal-pie">
+      El tarot es una herramienta de reflexión y entretenimiento. Las lecturas no sustituyen el consejo de profesionales de la salud, el derecho o las finanzas.
+      <br><a href="#/legal/aviso-legal" style="display:inline">Aviso legal</a> · <a href="#/legal/privacidad" style="display:inline">Privacidad</a> · <a href="#/legal/cookies" style="display:inline">Cookies</a> · © <span id="anio"></span> Luna Arcana
+    </div>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script src="js/cartas.js?v=10"></script>
+<script src="js/contenido.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
+</body>
+</html>

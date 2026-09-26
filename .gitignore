@@ -1,0 +1,5 @@
+.DS_Store
+# Originales de 1909 (dominio público, Wikimedia): se bajan otra vez si hace falta
+img/rws-1909/
+img/rws-1909-hd/
+__pycache__/
