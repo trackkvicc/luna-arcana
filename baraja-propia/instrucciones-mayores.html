@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baraja Luna Arcana · Instrucciones</title>
+<style>
+  :root { --tinta:#2b2340; --gris:#6f6680; --turquesa:#2a9ea3; --rosa:#d0577f; --oro:#c9973c; --linea:#ece3d6; --papel:#fff; --crema:#fbf7f1; }
+  body { margin:0; background:var(--crema); color:var(--tinta); font-family: -apple-system, Helvetica, Arial, sans-serif; line-height:1.55; }
+  .pagina { max-width: 900px; margin: 0 auto; padding: 32px 16px 60px; }
+  h1 { font-family: Georgia, serif; font-size: 2.2rem; margin: 0 0 6px; }
+  h2 { font-family: Georgia, serif; margin: 36px 0 10px; }
+  .suave { color: var(--gris); }
+  .caja { background: var(--papel); border: 1px solid var(--linea); border-radius: 14px; padding: 18px 20px; margin: 14px 0; }
+  .pasos li { margin-bottom: 8px; }
+  .aviso { background: #fff6dc; border: 1px solid #f0dca0; color: #6b5210; border-radius: 10px; padding: 12px 16px; margin: 14px 0; font-size: .95rem; }
+  .carta h3 { margin: 0 0 4px; font-family: Georgia, serif; }
+  .carta .luna { font-size: .85rem; color: var(--turquesa); font-weight: 600; }
+  .carta .idea { margin: 6px 0 10px; }
+  pre { white-space: pre-wrap; background: #f6f3fb; border-radius: 10px; padding: 12px 14px; font-size: .85rem; margin: 8px 0; color: #3d3358; }
+  button { border: 0; border-radius: 999px; padding: 9px 16px; font-weight: 600; cursor: pointer; margin: 4px 6px 0 0; font-size: .9rem; }
+  .b-mj { background: var(--turquesa); color: #fff; } .b-gpt { background: var(--rosa); color: #fff; }
+  .ok { color: #2f8a4f; font-size: .85rem; margin-left: 6px; }
+  .nombre-archivo { font-family: Menlo, monospace; font-size: .85rem; background: #eef7f7; padding: 2px 6px; border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  td { border-bottom: 1px solid var(--linea); padding: 7px 6px; vertical-align: top; }
+  td:first-child { font-weight: 600; width: 30%; }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <h1>Baraja Luna Arcana · Arcanos mayores</h1>
+  <p class="suave">La baraja propia de la web: el Mediterráneo de noche —todas las cartas son nocturnas—, visto a través de un arco encalado, con la luna en una fase distinta en cada carta.</p>
+
+  <h2>La biblia de estilo</h2>
+  <div class="caja"><table>
+    <tr><td>Escenario</td><td>Costa mediterránea, <strong>siempre de noche</strong>: pueblos encalados, acantilados, olivos, limoneros, buganvillas, barcas, faros, terrazas.</td></tr>
+    <tr><td>El sello de la baraja</td><td><strong>Cada escena se ve a través de un arco de piedra encalada</strong> (como una ventana), y en cada carta aparece <strong>la luna en pan de oro</strong>, en una fase concreta. Nadie más tiene esto.</td></tr>
+    <tr><td>Colores</td><td>Azul noche e índigo, turquesa del mar, terracota, amarillo limón, rosa dorado. Detalles en oro.</td></tr>
+    <tr><td>Técnica</td><td>Acuarela suelta y luminosa + línea fina de tinta con rayado + toques de pan de oro, sobre papel con textura.</td></tr>
+    <tr><td>Personas</td><td>Gente mediterránea de hoy, variada, con rostros serenos. Nada de trajes medievales.</td></tr>
+    <tr><td>Texto</td><td>Ninguno. La franja de abajo queda lisa: el título manuscrito lo pone la web.</td></tr>
+  </table></div>
+
+  <h2>Cómo hacerlo</h2>
+  <ol class="pasos">
+    <li><strong>Empieza por «0. El Loco».</strong> Pulsa <em>Copiar para Midjourney</em> (o <em>para ChatGPT</em>), pégalo y genera. Repite hasta que salga una que te enamore: esa marcará el estilo de toda la baraja.</li>
+    <li><strong>Fija el estilo (solo Midjourney):</strong> copia el enlace de esa imagen buena y, en todas las demás cartas, añade al final <code>--sref ENLACE --sw 200</code>. Así las 22 salen con el mismo estilo.<br>
+      En ChatGPT: sube la imagen buena y di «usa exactamente este estilo para la siguiente carta» antes de pegar cada instrucción.</li>
+    <li><strong>Descarga cada carta en máxima calidad</strong> (en Midjourney, «Upscale» y descargar) y guárdala en <span class="nombre-archivo">Escritorio › Tarot › baraja-propia › mayores</span> con el nombre que pone en cada carta (por ejemplo <span class="nombre-archivo">00-el-loco.png</span>).</li>
+    <li><strong>Avísame</strong> cuando tengas unas cuantas: las reviso, las igualo (recorte, color, tamaño) y las pongo en la web.</li>
+  </ol>
+  <div class="aviso">No añadas nombres de artistas ni de otras barajas («estilo Light Seer's», etc.): el estilo tiene que ser propio. Y revisa que no salgan letras raras: si salen, vuelve a generar.</div>
+
+  <h2>Las 22 cartas</h2>
+  <div id="cartas"></div>
+</div>
+
+<script>
+const ESTILO = "tarot card illustration, Mediterranean coast at night, nocturnal scene lit by moonlight and warm lanterns, the whole scene seen through a whitewashed stone arch like a window, loose luminous watercolor washes in deep indigo, turquoise, terracotta and rose-gold, fine black ink linework with delicate cross-hatching, gold leaf accents, the moon painted in shining gold leaf, hand-painted textured watercolor paper, serene contemporary Mediterranean people, dreamy, warm and hopeful mood, plain empty band at the bottom of the card";
+const MJ = " --ar 7:12 --v 7 --style raw --no text, letters, numbers, words, watermark, signature";
+const GPT = "Vertical image, 7:12 proportion (like a tarot card). Absolutely no text, letters or numbers anywhere. ";
+
+const CARTAS = [
+  ["00-el-loco", "0. El Loco", "Luna nueva (disco oscuro con borde de oro)", "Un joven viajero descalzo a punto de saltar desde un sendero del acantilado, con un perrito blanco.",
+   "a barefoot young traveller with a small linen bag on a stick, joyfully stepping off a cliff path above the calm sea, a small white dog jumping at his feet, a single white flower in his hand, bougainvillea on the arch, new moon as a dark disc with a thin gold rim"],
+  ["01-el-mago", "1. El Mago", "Luna creciente", "En una terraza bajo un limonero, alguien levanta una mano a la luna con los cuatro objetos de los palos sobre la mesa.",
+   "a confident young person standing at a terrace table under a lemon tree, one hand raised towards the moon, the other pointing to the ground, on the table an olive-wood staff, a ceramic cup, a silver blade and a gold coin, infinity sign formed by fireflies above the head, waxing crescent moon"],
+  ["02-la-sacerdotisa", "2. La Sacerdotisa", "Luna llena reflejada en el agua", "Una mujer serena sentada entre dos columnas de una ermita junto al mar, con un pergamino.",
+   "a serene woman in flowing blue and white robes seated between two whitewashed columns, one dark and one light, of a seaside chapel, a scroll in her lap, a thin veil behind her embroidered with pomegranates, the full moon reflected in perfectly still water behind her"],
+  ["03-la-emperatriz", "3. La Emperatriz", "Luna gibosa creciente", "Una mujer radiante descansando en un jardín exuberante de limoneros, granados y trigo.",
+   "a radiant woman in a flowing terracotta dress resting on cushions in a lush garden of lemon trees, pomegranates and golden wheat, a small stream, a crown of twelve tiny stars, abundance and warmth, waxing gibbous moon"],
+  ["04-el-emperador", "4. El Emperador", "Cuarto creciente", "Un hombre maduro en un trono tallado en la roca, con un puerto fortificado a sus pies.",
+   "a mature bearded man seated on a throne carved into the cliff rock, ram heads carved on the throne, holding a staff, a fortified harbour town with stone walls far below, firm and protective presence, first quarter moon"],
+  ["05-el-hierofante", "5. El Hierofante", "Luna llena", "Un anciano maestro en la puerta de una iglesia encalada, con dos alumnos y dos llaves.",
+   "a wise elder teacher standing at the door of a whitewashed church with a bell tower, raising two fingers in blessing, two young students listening at his feet, two crossed keys at the doorstep, full moon above the bell tower"],
+  ["06-los-enamorados", "6. Los Enamorados", "Luna llena grande", "Una pareja frente a frente con los pies en el mar; sobre ellos, un ángel hecho de nubes y luz de luna.",
+   "a couple facing each other barefoot at the edge of the sea at night, holding hands, above them a huge angel formed by clouds and moonlight with open arms, a lemon tree on one side and an olive tree on the other, large glowing full moon"],
+  ["07-el-carro", "7. El Carro", "Media luna", "Una barca de pesca tirada por dos delfines, uno negro y uno blanco, con alguien decidido en la proa.",
+   "a traditional wooden fishing boat pulled across the waves by two dolphins, one black and one white, a determined person standing at the prow under a canopy of stars, a lighthouse on the coast, half moon"],
+  ["08-la-fuerza", "8. La Fuerza", "Luna gibosa", "En la playa, una mujer con corona de flores cierra con suavidad la boca de un león.",
+   "on a moonlit beach, a gentle woman wearing a crown of wildflowers calmly closing the mouth of a large lion with her hands, the lion relaxed and trusting, infinity sign in fireflies above her head, waxing gibbous moon"],
+  ["09-el-ermitano", "9. El Ermitaño", "Luna menguante fina", "Un anciano con un farol subiendo el camino al faro en lo alto del acantilado.",
+   "an old man in a long grey cloak holding a glowing lantern with a star inside, climbing a lonely path up to a lighthouse on top of a cliff, wind in the olive trees, vast dark sea, thin waning crescent moon"],
+  ["10-la-rueda-de-la-fortuna", "10. La Rueda de la Fortuna", "Luna llena como centro de la rueda", "Un viejo molino de piedra cuyas aspas forman la rueda del destino, con un gato como esfinge.",
+   "an old stone windmill on a hill above the sea whose sails form a great turning wheel of fortune with zodiac symbols painted in gold, a cat sitting on top like a sphinx, a snake and a fox climbing the wheel, winged creatures in the four corners as constellations, full moon at the centre of the wheel"],
+  ["11-la-justicia", "11. La Justicia", "Luna llena", "Una mujer sentada en un patio simétrico, con una balanza de conchas y una espada.",
+   "a calm woman seated on a stone bench in a perfectly symmetrical whitewashed courtyard, holding a balance scale made of two seashells in one hand and an upright sword in the other, a red curtain behind her, full moon exactly centred above her"],
+  ["12-el-colgado", "12. El Colgado", "Luna nueva", "Un hombre colgado cabeza abajo de la rama de un olivo, sereno, con un halo, sobre el agua quieta.",
+   "a man hanging upside down by one foot from the branch of an ancient olive tree, arms behind his back, completely serene, a soft golden halo around his head, his reflection in calm water below, new moon"],
+  ["13-la-muerte", "13. La Muerte", "Eclipse (luna oscura con corona de luz)", "Un esqueleto vestido de lino blanco cabalga un caballo blanco por la orilla, a la luz de los faroles del puerto.",
+   "a skeleton dressed in white linen riding a pale white horse along the shoreline at night, carrying a black banner with a white rose, a small boat leaving the harbour, harbour lanterns glowing between two towers on the horizon, eclipsed moon with a ring of light"],
+  ["14-la-templanza", "14. La Templanza", "Luna creciente", "Un ángel con un pie en el mar y otro en la arena, pasando agua de una taza de cerámica a otra.",
+   "an androgynous angel with soft rainbow wings, one foot in the sea and one on the sand, pouring water between two ceramic cups in a flowing arc, irises growing by the shore, a path leading to distant mountains, waxing crescent moon"],
+  ["15-el-diablo", "15. El Diablo", "Luna oscura rojiza", "En una cueva junto al mar, una figura con cuernos y dos personas con cadenas muy flojas.",
+   "inside a smoky sea cave, a horned goat-headed figure with bat wings sitting on a dark stone, holding a torch downwards, below him two people loosely chained who could easily free themselves, dark reddish moon glowing through the cave mouth"],
+  ["16-la-torre", "16. La Torre", "Luna llena tras un rayo", "Un faro alcanzado por un rayo; una corona cae y dos personas caen al mar en plena tormenta.",
+   "a tall lighthouse on the rocks struck by a bolt of lightning, its crown-shaped top blown off, flames and sparks, two people falling towards the stormy sea, dramatic clouds, full moon behind the storm"],
+  ["17-la-estrella", "17. La Estrella", "Cielo lleno de estrellas (luna muy fina)", "Una mujer arrodillada en la orilla vierte agua en el mar y en la tierra, bajo una gran estrella de ocho puntas.",
+   "a young woman kneeling at the shore, pouring water from one jar into the sea and from another onto the land, a huge eight-pointed golden star and seven smaller stars above, a small bird on an olive branch, peaceful and hopeful, very thin crescent moon"],
+  ["18-la-luna", "18. La Luna", "Luna llena enorme con rostro dormido", "Un camino que sale del mar entre dos torres de vigía, con un perro y un zorro aullando.",
+   "a winding path rising from the sea between two old watchtowers, a dog and a fox howling at the sky, a crayfish crawling out of a tide pool, mysterious and dreamy, enormous full moon with a gentle sleeping face"],
+  ["19-el-sol", "19. El Sol", "Luna llena radiante como un sol (Noche de San Juan)", "Noche de San Juan: un niño feliz sobre un caballo blanco junto a una gran hoguera en la playa, con girasoles y la luna llena brillando como un sol.",
+   "Midsummer night of San Juan on the beach: a joyful child riding a white horse beside a great bonfire, sparks rising into the night sky, sunflowers along a whitewashed wall, people dancing in the distance, a huge radiant full moon glowing golden like a sun over the sea"],
+  ["20-el-juicio", "20. El Juicio", "Luna gibosa", "Un ángel toca la trompeta sobre el mar; personas se levantan de sus barcas con los brazos abiertos.",
+   "a great angel in the clouds blowing a golden trumpet over the sea, below people rising from small boats with open arms, looking up in awakening, the night sky lit by the angel's golden glow, waxing gibbous moon"],
+  ["21-el-mundo", "21. El Mundo", "Luna llena dentro de la corona", "Una bailarina dentro de una corona ovalada de olivo que flota sobre el mar; en las esquinas, constelaciones.",
+   "a dancer floating inside an oval wreath of olive branches tied with red ribbons, holding two small wands, above a calm sea, in the four corners a lion, an eagle, a bull and an angel drawn as golden constellations, full moon glowing inside the wreath"],
+];
+
+const cont = document.getElementById("cartas");
+CARTAS.forEach(([archivo, nombre, luna, idea, escena]) => {
+  const mj = `${ESTILO}, ${escena}${MJ}`;
+  const gpt = `${GPT}${ESTILO}, ${escena}.`;
+  const div = document.createElement("div");
+  div.className = "caja carta";
+  div.innerHTML = `<h3>${nombre}</h3><span class="luna">🌙 ${luna}</span>
+    <p class="idea">${idea}</p>
+    <p class="suave" style="font-size:.85rem;margin:0">Guárdala como <span class="nombre-archivo">${archivo}.png</span></p>
+    <pre>${mj}</pre>
+    <button class="b-mj">Copiar para Midjourney</button><button class="b-gpt">Copiar para ChatGPT</button><span class="ok"></span>`;
+  const ok = div.querySelector(".ok");
+  const copiar = async t => { try { await navigator.clipboard.writeText(t); ok.textContent = "✓ Copiado"; } catch (e) { ok.textContent = "Selecciona el texto y cópialo a mano"; } setTimeout(() => ok.textContent = "", 2500); };
+  div.querySelector(".b-mj").onclick = () => copiar(mj);
+  div.querySelector(".b-gpt").onclick = () => copiar(gpt);
+  cont.appendChild(div);
+});
+</script>
+</body>
+</html>

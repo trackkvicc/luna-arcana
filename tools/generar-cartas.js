@@ -95,7 +95,7 @@ ${jsonld}
 </head>
 <body>
 <header class="cab"><div class="contenedor">
-  <a class="marca" href="${app}"><span class="luna">☾</span> Luna Arcana</a>
+  <a class="marca" href="${app}"><img class="simbolo" src="${r}img/simbolo.svg" alt="" width="23" height="30"> Luna Arcana</a>
   <nav class="menu" style="display:flex">${T.menu.map(([h, t]) => `<a href="${app}#/${h}">${t}</a>`).join("")}</nav>
 </div></header>
 <main>${cuerpo}</main>

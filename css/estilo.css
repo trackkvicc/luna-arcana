@@ -44,7 +44,8 @@ p { margin: 0 0 1em; }
 .aviso-top a { color: var(--tinta); font-weight: 700; }
 header.cab { background: rgba(255, 255, 255, .85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--tinta); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--linea); }
 .cab .contenedor { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
-.marca { display: flex; align-items: center; gap: 8px; color: var(--tinta); text-decoration: none; font-family: var(--mano); font-size: 2rem; font-weight: 700; }
+.marca { display: flex; align-items: center; gap: 10px; color: var(--tinta); text-decoration: none; font-family: var(--serif); font-size: 1.75rem; font-weight: 600; letter-spacing: .01em; }
+.marca .simbolo { height: 30px; width: auto; display: block; }
 .marca .luna { color: var(--oro); font-size: 1.6rem; font-family: var(--serif); }
 nav.menu { display: flex; gap: 4px; align-items: center; }
 nav.menu a { color: var(--tinta); text-decoration: none; font-size: .93rem; padding: 8px 12px; border-radius: 999px; font-weight: 500; }
@@ -110,8 +111,11 @@ section.oscuro .tarjeta { background: rgba(255,255,255,.8); backdrop-filter: blu
 .carta .titulo-c { position: absolute; left: 10%; right: 6%; bottom: 4.5%; font-family: "Caveat", cursive; font-weight: 700; font-size: 1.15em; line-height: 1; color: #fff; text-shadow: 0 1px 2px #1d1530, 0 0 6px rgba(29,21,48,.9), 0 0 1px #1d1530; text-align: left; }
 .carta.invertida .cara > * { transform: rotate(180deg); }
 .carta .dorso { transform: rotateY(180deg); }
-.carta .dorso::before { content: "☾"; position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2em; text-shadow: 0 0 12px #fff;
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.55) 0 8%, transparent 22%), radial-gradient(ellipse at 30% 25%, #ff9ad5 0, transparent 45%), radial-gradient(ellipse at 75% 75%, #6fd3d6 0, transparent 50%), radial-gradient(circle at 50% 50%, transparent 30%, rgba(255,255,255,.35) 31%, transparent 32%), linear-gradient(160deg, #2a8fa3, #3a2f8f 55%, #1c1330); }
+.carta .dorso::before { content: ""; position: absolute; inset: 0; border-radius: 10px;
+  background: url(../img/simbolo.svg) center / 30% no-repeat,
+    radial-gradient(circle at 50% 50%, rgba(243,213,138,.35) 0 14%, transparent 34%),
+    radial-gradient(ellipse at 30% 25%, #ff9ad5 0, transparent 45%), radial-gradient(ellipse at 75% 75%, #6fd3d6 0, transparent 50%),
+    linear-gradient(160deg, #2a8fa3, #3a2f8f 55%, #1c1330); }
 .carta .dorso::after { content: ""; position: absolute; inset: 0; border-radius: 10px; border: 2px solid rgba(255,255,255,.5); background-image: radial-gradient(1px 1px at 20% 30%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 70% 15%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 85% 60%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 15% 80%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 55% 88%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 40% 55%, #fff 50%, transparent 51%); }
 .carta .pips { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: .15em .35em; width: 80%; font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols", serif; color: #fff; text-shadow: 0 0 6px rgba(255,255,255,.8), 0 0 1px #1d1530; line-height: 1; }
 .carta .pips i { font-style: normal; font-size: 1.15em; width: 1.3em; text-align: center; }
